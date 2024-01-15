@@ -9,8 +9,34 @@
 <body>
 
 
-    <canvas id="canvas" width="480" height="480"></canvas>
-    <p>
+    <table>
+        <tr>
+            <td width="480">
+                <canvas id="canvas" style="border: none;" width="480" height="480" style="vertical-align: middle;"></canvas>
+            </td>
+            <td>
+                <div class="controls">
+     
+                    <h2>Einstellungen</h2>
+
+                    <label for=""input_cols">Seitenl&auml;nge: </label>
+
+                    <input type="number" value="7" id="input_cols" size="3" name="input_cols" onchange="reset()">
+                    <button onclick="reset()">Reset</button>
+
+                    <p id="info"></p>
+             
+                    
+             
+                </div>
+        
+            </td>
+        </tr>
+
+     
+     
+    </table>
+     <p>
         Arthur und Renate spielen auf
 einem quadratischen Spielbrett,
 das in 7 x 7 Spielfelder unterteilt
