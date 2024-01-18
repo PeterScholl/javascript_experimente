@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JS Cows&Cactus designer</title>
+</head>
+<body>
+    <h1>Nach Krazydad - Entwicklung eines Designers</h1>
+    <p>
+        Kurzanleitung: todo
+    </p>
+    <table>
+        <tr>
+            <td width="480">
+                <canvas id="canvas" style="border: none;" width="480" height="480" style="vertical-align: middle;"></canvas>
+            </td>
+            <td>
+                <div class="controls">
+     
+                    <h2>Einstellungen</h2>
+
+                    <label for=""input_cols">Seitenl&auml;nge: </label>
+
+                    <input type="number" value="7" id="input_cols" size="3" name="input_cols" onchange="valuesUpdated()">
+                    <input type="number" value="50" id="input_meadow_percent" size="4" name="input_meadow_percent" min="0" max="100" onchange="valuesUpdated()">
+                    <button onclick="valuesUpdated()">Reload</button>
+                    
+
+
+                    <p id="info"></p>
+             
+                    
+             
+                </div>
+        
+            </td>
+        </tr>
+
+     
+     
+    </table>
+    <script src="./js/corral.js"></script>
+</body>
+</html>
