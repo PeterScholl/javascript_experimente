@@ -20,9 +20,12 @@
      
                     <h2>Einstellungen</h2>
 
-                    <label for=""input_cols">Seitenl&auml;nge: </label>
-
-                    <input type="number" value="7" id="input_cols" size="3" name="input_cols" onchange="valuesUpdated()">
+                    <label for=""input_rows">Zeilen: </label>
+                    <input type="number" value="4" id="input_rows" size="3" name="input_rows" onchange="valuesUpdated()">
+                    <label for=""input_cols">Spalten: </label>
+                    <input type="number" value="4" id="input_cols" size="3" name="input_cols" onchange="valuesUpdated()">
+                    <br>
+                    <label for=""input_meadow_percent">Prozent Wiese: </label>
                     <input type="number" value="50" id="input_meadow_percent" size="4" name="input_meadow_percent" min="0" max="100" onchange="valuesUpdated()">
                     <button onclick="valuesUpdated()">Reload</button>
                     

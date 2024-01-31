@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symmetrie durch F&auml;rbung</title>
+</head>
+<body>
+
+
+    <table>
+        <tr>
+            <td width="480">
+                <canvas id="canvas" style="border: none;" width="480" height="480" style="vertical-align: middle;"></canvas>
+            </td>
+            <td>
+     
+                    <h2>Informationen</h2>
+
+                    
+
+                    <p id="info" style="display: block;"></p>
+             
+                    <button onclick="reset()">Reset</button>
+                    <button onclick="toggleVisibility(document.getElementById('info'))">Infos ja/nein</button>
+                    <input type="checkbox" id="alleFelder" name="alleFelder">
+                    <label for="alleFelder">Alle Felder erlauben</label>
+                    <input type="checkbox" id="symmAchsen" name="symmAchsen">
+                    <label for="symmAchsen">Symmetrieachsen zeichnen</label>
+
+                    
+             
+                </div>
+        
+            </td>
+        </tr>
+
+     
+     
+    </table>
+     <p>
+        Klicke die Felder an, um sie zu Färben
+    </p>
+    <script src="./js/symmetry.js"></script>  
+</body>
+</html>
