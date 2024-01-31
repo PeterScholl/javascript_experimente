@@ -80,7 +80,7 @@ function pruefeSymmetrie() {
     console.log("Punktsymmetrisch steigend:", pktSymm);
     let bericht = "Die Figur ist<br>";
     if (!(achsSymm1 || achsSymm2 || pktSymm)) {
-        bericht += "NICHT symmetrisch"
+        bericht += "<b>NICHT</b> symmetrisch"
     } else {
         if (achsSymm1) {
             bericht += "symmetrisch zur fallenden Symmetrieachse<br>";
@@ -137,8 +137,11 @@ function erlaubtesFeld(x, y) {
 }
 
 function draw() {
-    canvas.width = 480;
+    //canvas.width = 480;
+    console.log("Padding of canvas parent:",canvas.parentElement.style.padding);
+    canvas.width = Math.min(480,canvas.parentElement.clientWidth-30); //padding ist 15
     canvas.height = canvas.width; //quadratisch
+    field_width_px = canvas.width / width;
     ctx.fillStyle = 'black';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     //Felder

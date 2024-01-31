@@ -1,47 +1,92 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        .row::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        label {
+            position: relative;
+            white-space: nowrap;
+        }
+
+        h2,
+        p {
+            margin-top: 0px;
+            margin-bottom: 5px;
+        }
+
+        [class*="col-"] {
+            float: left;
+            padding: 15px;
+        }
+
+        /* For mobile phones: */
+        [class*="col-"] {
+            width: 100%;
+            padding: 5px;
+        }
+
+        @media only screen and (min-width: 800px) {
+
+            /* For desktop: */
+            .col-1 {
+                width: 50%;
+            }
+
+            .col-2 {
+                width: 100%;
+            }
+        }
+    </style>
     <title>Symmetrie durch F&auml;rbung</title>
 </head>
-<body>
+
+<body onresize="draw()">
+
+    <div class="row">
+        <div class="col-1">
+            <canvas id="canvas" style="border: none;" style="vertical-align: middle;"></canvas>
+            <p>
+                Klicke die Felder an, um sie zu Färben
+            </p>
+        </div>
+        <div class="col-1">
+
+            <h2>Informationen</h2>
+
+            <p id="info" style="display: block;"></p>
+
+            <button onclick="reset()">Reset</button>
+            <button onclick="toggleVisibility(document.getElementById('info'))">Infos ja/nein</button>
+
+            <label for="alleFelder">
+                <input type="checkbox" id="alleFelder" name="alleFelder">
+                Alle Felder erlauben
+            </label>
+            <label for="symmAchsen">
+                <input type="checkbox" id="symmAchsen" name="symmAchsen">
+                Symmetrieachsen zeichnen
+            </label>
 
 
-    <table>
-        <tr>
-            <td width="480">
-                <canvas id="canvas" style="border: none;" width="480" height="480" style="vertical-align: middle;"></canvas>
-            </td>
-            <td>
-     
-                    <h2>Informationen</h2>
 
-                    
+        </div>
 
-                    <p id="info" style="display: block;"></p>
-             
-                    <button onclick="reset()">Reset</button>
-                    <button onclick="toggleVisibility(document.getElementById('info'))">Infos ja/nein</button>
-                    <input type="checkbox" id="alleFelder" name="alleFelder">
-                    <label for="alleFelder">Alle Felder erlauben</label>
-                    <input type="checkbox" id="symmAchsen" name="symmAchsen">
-                    <label for="symmAchsen">Symmetrieachsen zeichnen</label>
+    </div>
 
-                    
-             
-                </div>
-        
-            </td>
-        </tr>
-
-     
-     
-    </table>
-     <p>
-        Klicke die Felder an, um sie zu Färben
-    </p>
-    <script src="./js/symmetry.js"></script>  
+    <script src="./js/symmetry.js"></script>
 </body>
+
 </html>
