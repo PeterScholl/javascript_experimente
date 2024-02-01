@@ -117,6 +117,20 @@ function canvasClicked(canvas, event) {
     }
 }
 
+function randomColors() {
+    for (let zeile = 0; zeile < width; zeile++) {
+        for (let spalte = 0; spalte < width; spalte++) {
+            if (checkBoxAlleFelder.checked == true || erlaubtesFeld(zeile, spalte)) {
+                let zfl = Math.floor(Math.random()*colorsAvailable.length);
+                //console.log("Zufall",zfl);
+                colors[zeile][spalte] = colorsAvailable[zfl];
+            }
+        }
+    }
+    pruefeSymmetrie();
+    draw();
+}
+
 function naechsteFarbe(x, y) {
     if (x >= 0 && x < width && y >= 0 && y < width) {
         let aktColor = colors[x][y];
