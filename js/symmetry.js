@@ -77,8 +77,6 @@ function pruefeSymmetrie() {
         }
     }
 
-
-
     let bericht = "Die Figur ist<br>";
     if (!(achsSymm1 || achsSymm2 || pktSymm || achsSymm_hor || achsSymm_ver)) {
         bericht += "<b>NICHT</b> symmetrisch"
@@ -103,6 +101,42 @@ function pruefeSymmetrie() {
 
 }
 
+/**
+ * Verändert die Farben der oberenRechten, unteren rechten oder unteren Hälfte so, dass
+ * eine Symmetrie vorliegt
+ * @param {String} wo obenRechts, untenRechts, punkt 
+ */
+function faerbeSymm(wo) {
+    switch (wo) {
+        case 'obenRechts':
+            for (let i = 0; i < width; i++) {
+                for (let j = i; j < width; j++) {
+                    colors[j][i] = colors[i][j];
+                }
+            }
+            pruefeSymmetrie();
+            draw();
+            break;
+        case 'untenRechts':
+            for (let i = 0; i < width; i++) {
+                for (let j = 0; j < width-i; j++) {
+                    colors[width-1-i][width-1-j] = colors[j][i];
+                }
+            }
+            pruefeSymmetrie();
+            draw();
+            break;
+        case 'punkt':
+            for (let i = 0; i < width; i++) {
+                for (let j = 0; j < Math.ceil(width/2); j++) {
+                    colors[width-1-i][width-1-j] = colors[i][j];
+                }
+            }
+            pruefeSymmetrie();
+            draw();
+            break;
+    }
+}
 
 function canvasClicked(canvas, event) {
     const rect = canvas.getBoundingClientRect()
@@ -200,17 +234,17 @@ function draw() {
     //Symmetrieachsen einzeichnen
     if (checkBoxSymmetrieAchsen.checked == true) {
         console.log("Symmetrieachsen zeichnen!")
-        drawLine(0, 0,canvas.width, canvas.height);
-        drawLine(canvas.width, 0,0, canvas.height);
-        if (width < 5 || checkBoxAlleFelder.checked ) { //horizontale und vertikale Symmetrieachse ergänzen
-            drawLine(canvas.width/2,0,canvas.width/2, canvas.height);
-            drawLine(0,canvas.height/2,canvas.width,canvas.height/2);
+        drawLine(0, 0, canvas.width, canvas.height);
+        drawLine(canvas.width, 0, 0, canvas.height);
+        if (width < 5 || checkBoxAlleFelder.checked) { //horizontale und vertikale Symmetrieachse ergänzen
+            drawLine(canvas.width / 2, 0, canvas.width / 2, canvas.height);
+            drawLine(0, canvas.height / 2, canvas.width, canvas.height / 2);
         }
     }
 }
 
-function drawLine(from_x, from_y, to_x, to_y, style='red') {
-    ctx.lineWidth=2;
+function drawLine(from_x, from_y, to_x, to_y, style = 'red') {
+    ctx.lineWidth = 2;
     ctx.strokeStyle = style;
     ctx.beginPath();
     ctx.moveTo(from_x, from_y);
