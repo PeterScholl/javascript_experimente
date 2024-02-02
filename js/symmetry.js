@@ -22,10 +22,12 @@ checkBoxSymmetrieAchsen.addEventListener('change', function (e) { draw(); });
 
 
 function unerlaubteFelderSchwarz() {
-    if (checkBoxAlleFelder.checked == false) {
-        for (let zeile = 0; zeile < width; zeile++) {
-            for (let spalte = 0; spalte < width; spalte++) {
-                if (!erlaubtesFeld(zeile, spalte)) {
+    for (let zeile = 0; zeile < width; zeile++) {
+        for (let spalte = 0; spalte < width; spalte++) {
+            if (!erlaubtesFeld(zeile, spalte)) {
+                if (checkBoxAlleFelder.checked == false) {
+                    colors[zeile][spalte] = 'black';
+                } else {
                     colors[zeile][spalte] = colorsAvailable[0];
                 }
             }
@@ -47,10 +49,10 @@ function reset() {
     console.log("Reset");
     let fieldSizeInput = document.getElementById('fieldsize');
     //console.log("Fieldsize:",fieldsize.value);
-    if (fieldsize.value>=3 && fieldsize.value<=20) {
-        width=Number.parseInt(fieldsize.value);
+    if (fieldsize.value >= 3 && fieldsize.value <= 20) {
+        width = Number.parseInt(fieldsize.value);
     } else {
-        fieldsize.value=width;
+        fieldsize.value = width;
     }
     colors = Array(width).fill([]);
     colors = colors.map((e) => Array(width).fill('gray'));
@@ -60,33 +62,26 @@ function reset() {
 }
 
 function pruefeSymmetrie() {
-    //Achsensymmetrie fallende Achse
-    let achsSymm1 = true;
+    let achsSymm1 = true; //Achsensymmetrie fallende Achse
+    let achsSymm2 = true; //Achsensymmetrie steigende Achse
+    let pktSymm = true; //Achsensymmetrie Punktsymmetrie
+    let achsSymm_hor = true;
+    let achsSymm_ver = true;
+
     for (let i = 0; i < width; i++) {
         for (let j = 0; j < width; j++) {
-            achsSymm1 &= (colors[i][j] === colors[j][i]);
-        }
-    }
-    //Achsensymmetrie fallende Achse
-    let achsSymm2 = true;
-    for (let i = 0; i < width; i++) {
-        for (let j = 0; j < width; j++) {
-            achsSymm2 &= (colors[i][j] === colors[width - 1 - j][width - 1 - i]);
-        }
-    }
-    //Achsensymmetrie fallende Achse
-    let pktSymm = true;
-    for (let i = 0; i < width; i++) {
-        for (let j = 0; j < width; j++) {
-            pktSymm &= (colors[i][j] === colors[width - 1 - i][width - 1 - j]);
+            achsSymm1 &= (colors[i][j] === colors[j][i]); //Achsensymmetrie fallende Achse
+            achsSymm2 &= (colors[i][j] === colors[width - 1 - j][width - 1 - i]); //Achsensymmetrie steigende Achse
+            pktSymm &= (colors[i][j] === colors[width - 1 - i][width - 1 - j]); //Achsensymmetrie Punktsymmetrie   
+            achsSymm_hor &= (colors[i][j] === colors[i][width - 1 - j]); //Achsensymm. horizontal 
+            achsSymm_ver &= (colors[i][j] === colors[width - 1 - i][j]); //Achsensymm. vertikal 
         }
     }
 
-    console.log("Achsensymmetrisch fallend:", achsSymm1);
-    console.log("Achsensymmetrisch steigend:", achsSymm2);
-    console.log("Punktsymmetrisch steigend:", pktSymm);
+
+
     let bericht = "Die Figur ist<br>";
-    if (!(achsSymm1 || achsSymm2 || pktSymm)) {
+    if (!(achsSymm1 || achsSymm2 || pktSymm || achsSymm_hor || achsSymm_ver)) {
         bericht += "<b>NICHT</b> symmetrisch"
     } else {
         if (achsSymm1) {
@@ -97,6 +92,12 @@ function pruefeSymmetrie() {
         }
         if (pktSymm) {
             bericht += "symmetrisch zum Mittelpunkt<br>";
+        }
+        if (achsSymm_hor) {
+            bericht += "symmetrisch zur horizontalen Symmetrieachse<br>";
+        }
+        if (achsSymm_ver) {
+            bericht += "symmetrisch zur vertikalen Symmetrieachse<br>";
         }
     }
     infoField.innerHTML = bericht;
@@ -128,7 +129,7 @@ function randomColors() {
     for (let zeile = 0; zeile < width; zeile++) {
         for (let spalte = 0; spalte < width; spalte++) {
             if (checkBoxAlleFelder.checked == true || erlaubtesFeld(zeile, spalte)) {
-                let zfl = Math.floor(Math.random()*colorsAvailable.length);
+                let zfl = Math.floor(Math.random() * colorsAvailable.length);
                 //console.log("Zufall",zfl);
                 colors[zeile][spalte] = colorsAvailable[zfl];
             }
@@ -157,11 +158,11 @@ draw();
  * @returns true, wenn das Feld erlaubt, das heißt im Muster liegt
  */
 function erlaubtesFeld(x, y) {
-    console.log("width/2",width/2);
-    if ((x<Math.ceil(width/2)-1 && y<Math.ceil(width/2)-1) || (x>width/2 && y>width/2)) {
+    console.log("width/2", width / 2);
+    if ((x < Math.ceil(width / 2) - 1 && y < Math.ceil(width / 2) - 1) || (x > width / 2 && y > width / 2)) {
         return false;
     }
-    if ((x-y  <= Math.floor(width/2) ) && (y-x <= width/2)) {
+    if ((x - y <= Math.floor(width / 2)) && (y - x <= width / 2)) {
         return true;
     }
     return false;
@@ -170,7 +171,7 @@ function erlaubtesFeld(x, y) {
 function draw() {
     //canvas.width = 480;
     //console.log("Padding of canvas parent:",canvas.parentElement.style.padding);
-    canvas.width = Math.min(480,canvas.parentElement.clientWidth-30); //padding ist 15
+    canvas.width = Math.min(480, canvas.parentElement.clientWidth - 30); //padding ist 15
     canvas.height = canvas.width; //quadratisch
     field_width_px = canvas.width / width;
     ctx.fillStyle = 'black';
@@ -200,16 +201,22 @@ function draw() {
     //Symmetrieachsen einzeichnen
     if (checkBoxSymmetrieAchsen.checked == true) {
         console.log("Symmetrieachsen zeichnen!")
-        ctx.strokeStyle = 'red';
-        ctx.beginPath();
-        ctx.moveTo(0,0);
-        ctx.lineTo(canvas.width,canvas.height);
-        ctx.stroke();
-        ctx.beginPath();
-        ctx.moveTo(canvas.width,0);
-        ctx.lineTo(0,canvas.height);
-        ctx.stroke();
+        drawLine(0, 0,canvas.width, canvas.height);
+        drawLine(canvas.width, 0,0, canvas.height);
+        if (width < 5 || checkBoxAlleFelder.checked ) { //horizontale und vertikale Symmetrieachse ergänzen
+            drawLine(canvas.width/2,0,canvas.width/2, canvas.height);
+            drawLine(0,canvas.height/2,canvas.width,canvas.height/2);
+        }
     }
+}
+
+function drawLine(from_x, from_y, to_x, to_y, style='red') {
+    ctx.lineWidth=2;
+    ctx.strokeStyle = style;
+    ctx.beginPath();
+    ctx.moveTo(from_x, from_y);
+    ctx.lineTo(to_x, to_y);
+    ctx.stroke();
 }
 
 function draw_rect_onField(x, y, border = 0) {
