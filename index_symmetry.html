@@ -62,7 +62,7 @@
                 Klicke die Felder an, um sie zu Färben
             </p>
         </div>
-        <div class="col-1">
+        < class="col-1">
 
             <h2>Informationen</h2>
 
@@ -81,11 +81,17 @@
                 <input type="checkbox" id="symmAchsen" name="symmAchsen">
                 Symmetrieachsen zeichnen
             </label>
+            <br>
+            <input type="number" id="fieldsize" value="5" max="20" min="3" size="3" onchange="reset()">
 
 
 
         </div>
 
+    </div>
+    <div class="footer">
+        <hr>
+        <small>Stand 02.02.24</small>
     </div>
 
     <script src="./js/symmetry.js"></script>

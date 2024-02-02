@@ -45,6 +45,13 @@ function toggleVisibility(element) {
 
 function reset() {
     console.log("Reset");
+    let fieldSizeInput = document.getElementById('fieldsize');
+    //console.log("Fieldsize:",fieldsize.value);
+    if (fieldsize.value>=3 && fieldsize.value<=20) {
+        width=Number.parseInt(fieldsize.value);
+    } else {
+        fieldsize.value=width;
+    }
     colors = Array(width).fill([]);
     colors = colors.map((e) => Array(width).fill('gray'));
     //console.log(input_cols,n,width);
@@ -143,8 +150,18 @@ function naechsteFarbe(x, y) {
 reset();
 draw();
 
+/**
+ * berechnet ob ein Feld Im Muster liegt
+ * @param {Number} x  
+ * @param {Number} y 
+ * @returns true, wenn das Feld erlaubt, das heißt im Muster liegt
+ */
 function erlaubtesFeld(x, y) {
-    if (x == 2 || y == 2 || (x == 1 && y == 1) || (x == 3 && y == 3)) {
+    console.log("width/2",width/2);
+    if ((x<Math.ceil(width/2)-1 && y<Math.ceil(width/2)-1) || (x>width/2 && y>width/2)) {
+        return false;
+    }
+    if ((x-y  <= Math.floor(width/2) ) && (y-x <= width/2)) {
         return true;
     }
     return false;
@@ -152,7 +169,7 @@ function erlaubtesFeld(x, y) {
 
 function draw() {
     //canvas.width = 480;
-    console.log("Padding of canvas parent:",canvas.parentElement.style.padding);
+    //console.log("Padding of canvas parent:",canvas.parentElement.style.padding);
     canvas.width = Math.min(480,canvas.parentElement.clientWidth-30); //padding ist 15
     canvas.height = canvas.width; //quadratisch
     field_width_px = canvas.width / width;
