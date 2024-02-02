@@ -57,8 +57,7 @@ function reset() {
     colors = Array(width).fill([]);
     colors = colors.map((e) => Array(width).fill('gray'));
     //console.log(input_cols,n,width);
-    pruefeSymmetrie();
-    draw();
+    unerlaubteFelderSchwarz(); //zeichnet auch gleich das Feld neu und prüft symmetrie
 }
 
 function pruefeSymmetrie() {
