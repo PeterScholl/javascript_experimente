@@ -15,14 +15,14 @@ class Set {
         } else {
             //erster und einziger Aufruf der Initialisierung
             Set.instance = this;
-            this.setcount = 0;
             this.spielfeld = Array(21).fill(0); //Maximal 21 Karten
             this.spielfeldkarten = 0; //Anzahl der Karten auf dem Spielfeld
             this.kartenstapel = Array(81).fill(0); //gemischter Kartenstapel
             this.felderGewaehlt = Array(3).fill(0); //ausgewählte Felder
-            this.teams = 1; //Anzahl der Teams
-            this.won = Array(this.teams).fill(0); //Zähler für gefundene Sets je Team
-            this.lost = Array(this.teams).fill(0);; //Zähler für Fehlschläge
+            this.teams = 0; //Anzahl der Teams
+            this.teamNames = ['Nicht zugeordnet']; //Namen der Teams
+            this.won = Array(this.teams + 1).fill(0); //Zähler für gefundene Sets je Team
+            this.lost = Array(this.teams + 1).fill(0);; //Zähler für Fehlschläge
             this.topkarte = 0; //nächste Karte des gemischten Stapels
             this.tableRows = 3; //Anzahl Tabellenspalten
             this.kartenBildWidth = 200; //Weite eines Bildes in Pixeln
@@ -42,7 +42,9 @@ class Set {
         return Set.instance;
     }
 
-
+    /**
+     * Mischt die Karten neu und setzt alle Werte auf die Ausgangseinstellungen
+     */
     reset() {
         //Kartenstapel füllen
         for (let i = 0; i < 81; i++) {
@@ -66,10 +68,21 @@ class Set {
         this.spielfeldkarten = 12;
 
         //Spielvariablen zurücksetzen
-        this.won = Array(this.teams).fill(0); //Zähler für gefundene Sets je Team
-        this.lost = Array(this.teams).fill(0);; //Zähler für Fehlschläge
+        this.won = Array(this.teams + 1).fill(0); //Zähler für gefundene Sets je Team + Sammel
+        this.lost = Array(this.teams + 1).fill(0);; //Zähler für Fehlschläge
 
         this.draw();
+    }
+
+    /**
+     * Passt Teamvariablen an und setzt das Spiel zurück wenn sich die Anzahl geändert hat
+     */
+    teamWerteAnNamensListeAnpassen() {
+        let neueAnzahl = this.teamNames.length;
+        if (this.teams != neueAnzahl) {
+            this.teams = this.teamNames.length;
+            this.reset();
+        }
     }
 
 
@@ -90,17 +103,42 @@ class Set {
         for (let i = 0; i < this.spielfeldkarten; i++) {
             let td = document.createElement('td');
             td.setAttribute('id', i);
-            td.innerHTML = ""+(i+1)+"<img src='./img/" + (this.spielfeld[i] + 1) + ".gif' width=" + this.kartenBildWidth + ">";
+            td.innerHTML = "" + (i + 1) + "<img src='./img/" + (this.spielfeld[i] + 1) + ".gif' width=" + this.kartenBildWidth + ">";
             td.addEventListener("click", (e) => { this.karteGeklickt(e.target); });
             row[currow++].appendChild(td);
             currow %= this.tableRows;
         }
 
-        document.getElementById('infos').innerHTML = "<p>verbleibende Karten:" + (81 - this.topkarte) + "</p>";
-
+        this.drawInfoFeld();
     }
 
+    /**
+     * Füllt das Info-Feld neu mit Infos über verbleibende Karten ...
+     * Buttons für die Teams
+     */
+    drawInfoFeld() {
+        let infoHTML = "<p>verbleibende Karten:" + (81 - this.topkarte);
+        if (this.won[0] > 0) {
+            infoHTML += " gefundene Sets: " + this.won[0];
+        }
+        if (this.lost[0] > 0) {
+            infoHTML += " Fehlschläge: " + this.lost[0];
+        }
+        if (this.teams > 0) {
+            infoHTML += "<br>";
+            //Team Buttons
+            this.teamNames.slice(1).forEach((name, id) => {
+                infoHTML += "<button onclick='Set.getInstance().manageWon(" + (id+1) + ")' class='teams'>" + name + " (" + this.won[id+1] + ")</button>";
+            })
+        }
+        infoHTML += "</p>";
+        document.getElementById('infos').innerHTML = infoHTML;
+    }
 
+    /**
+     * Auswerten was passiert, wenn eine Karte geklickt wurde
+     * @param {Node} target 
+     */
     karteGeklickt(target) {
         console.log("Tag-Typ:", target.tagName);
         if (target.tagName === "IMG") {
@@ -124,15 +162,28 @@ class Set {
             // Auf Set prüfen
             if (this.isset(karten[0], karten[1], karten[2])) {
                 console.log("Set gefunden!!!");
-                this.spielfeld = this.spielfeld.filter((e) => { return !karten.includes(e) });
-                this.spielfeldkarten -= 3;
-                // Anzahl gefunden erhöhen
-                // Gegebenenfalls neue Karten austeilen - maximal 12
-                this.neueKartenAusteilen(3, 12);
+                this.won[0] += 1;
+                // Karten werden einfach entfernt wenn keine neuen Karten mehr da sind oder mehr als 12 auf dem Feld
+                if (this.topkarte >= 81 - 3 || this.spielfeldkarten > 12) {
+                    this.spielfeld = this.spielfeld.filter((e) => { return !karten.includes(e) });
+                    this.spielfeldkarten -= 3;
+                    // Gegebenenfalls neue Karten austeilen - maximal 12
+                    this.neueKartenAusteilen(3, 12);
+                    this.resize();
+                } else {
+                    //bevorzugte Methode - Karten ersetzen
+                    for (let i = 0; i < clickedCards.length; i++) {
+                        let spielkartenID = Number.parseInt(clickedCards[i].id);
+                        this.spielfeld[spielkartenID] = this.kartenstapel[this.topkarte++];
+                    }
+                }
+
                 this.draw();
 
             } else {
                 console.log("Kein Set!!");
+                this.lost[0] += 1;
+                this.drawInfoFeld();
             }
 
             //geklickt wieder auflösen
@@ -177,7 +228,7 @@ class Set {
                 for (let k = j + 1; k < this.spielfeldkarten; k++) { //Schauen ob diese auf dem Feld liegt
                     if (this.spielfeld[k] == skarte) {
                         numofsets++;
-                        console.log("Set gefunden:", i, j, k);
+                        console.log("Set gefunden:", i + 1, j + 1, k + 1);
                         break;
                     }
                 }
@@ -205,28 +256,66 @@ class Set {
     }
 
     /**
-     * berechnet/setzt die Größe der Karten passend zum Bildschirm
+     * berechnet/setzt die Größe der Karten passend zum Bildschirm und zur Kartenanzahl
      */
-    resize() { 
+    resize2() {
         // Berechne Anzahl der Zeilen und Breite einer Karte
-        if (window.innerHeight > 1.1* window.innerWidth) {
+        if (window.innerHeight > 1.1 * window.innerWidth) {
             //Der Bildschirm ist deutlich Höher als Breit
             //console.log("Bildschrim hochkant", window.innerHeight, window.innerWidth);
             let nrZeilen = Math.floor(window.innerHeight * 5 / window.innerWidth);
             this.tableRows = nrZeilen;
             //Bildwidth muss ausreichen um 21/nrZeilen Karten darzustellen
-            this.kartenBildWidth = window.innerWidth * nrZeilen / 21 -30 ; //-30 für das Padding
+            this.kartenBildWidth = window.innerWidth * nrZeilen / 21 - 30; //-30 für das Padding
         } else {
             this.tableRows = 3;
-            this.kartenBildWidth = window.innerWidth / 8 -30; //30 für das Padding
+            this.kartenBildWidth = window.innerWidth / 8 - 30; //30 für das Padding
         }
         this.draw();
     }
+
+    /**
+     * Alternative Resize Methode, die die Kartengröße nach der Anzahl der Spielkarten ausrechnet
+     */
+    resize() {
+        let height = window.innerHeight - 250; // Höhe ohne 250 px für die Buttons/Bedienung
+        let width = window.innerWidth;
+        let anzahlKarten = Math.max(15, this.spielfeldkarten); //es soll immer Platz für 15 Karten sein
+        //Faktor zwischen Länge und Breite eines Kartenfeldes wird mit 1.5 angenommen
+
+        let alpha = (width/1.5)/height;
+        let anzZeilen = Math.ceil(Math.sqrt(anzahlKarten/alpha));
+        this.tableRows = anzZeilen;
+        //Jetzt noch die richtige Weite ausrechnen
+        let anzSpalten = Math.ceil(anzahlKarten/anzZeilen);
+        let kartenWidthFit = width/anzSpalten-50;
+        let kartenHeightFit = (height/anzZeilen-50)*1.5;
+        this.kartenBildWidth = Math.min(kartenWidthFit,kartenHeightFit);
+        console.log("Anzahl Zeilen mit resize2",anzZeilen);
+        this.draw();
+    }
+
+    /**
+     * ordnet ein gefundenes Set dem TEam zu oder "legt" das
+     * Set wieder zurück auf den Stapel, wenn keins da ist
+     * @param {int} teamId des TEams, dass das Set erhalten soll
+     */
+    manageWon(teamId) {
+        //gefundenes Set diesem team zuordnen - oder abziehen
+        console.log("manageWon - teamID: ",teamId, "won0: ", this.won[0]);
+        console.dir(this.won);
+        if (this.won[0]>0) {
+            this.won[teamId]+=1;
+            this.won[0]-=1;
+        } else if (this.won[teamId]>0) {
+            this.won[0]+=1;
+            this.won[teamId]-=1;
+        }
+        this.drawInfoFeld();
+    }
 }
 
-function resize() {
-    Set.getInstance().resize();
-}
+
 
 console.log("Avail-height:", screen.availHeight, "Avail-width", screen.availWidth);
 let s = Set.getInstance();

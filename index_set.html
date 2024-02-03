@@ -6,6 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
+        body, button, li, input {
+            font-size: 1.3em;
+        }
+
         td {
             padding: 15px;
             background-color: antiquewhite;
@@ -15,30 +19,125 @@
             background-color: darkgreen;
         }
 
+        button.teams {
+            margin-right: 15px;
+            margin-top: 10px;
+            padding: 15px;
+        }
+
+        #teamModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        #modalContent {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: left;
+        }
     </style>
     <title>Das Spiel Set</title>
 </head>
 
-<body onresize="resize()">
+<body onresize="s.resize()">
 
+    <!-- Team modal start-->
+    <div id="teamModal">
+        <div id="modalContent">
+            <h2>Team Management</h2>
+            <ul id="teamList"></ul>
+            <input type="text" id="teamNameInput" placeholder="Enter Team Name">
+            <button onclick="addTeam()">Add Team</button>
+            <button onclick="closeTeamModal()">Close</button>
+        </div>
+    </div>
+    <!-- Team modal end -->
     <div class="field">
-       <table id="karten">
+        <table id="karten">
 
-       </table>
+        </table>
     </div>
     <div id="infos">
 
     </div>
     <div id="bedienung">
         <button>Reset</button>
-        <button onclick="console.log('Button');s.neueKartenAusteilen(3);s.draw();">kein Set</button>
-        <button onclick="console.log('Anzahl Sets',s.numberOfSets());">Sets</button>
+        <button onclick="s.neueKartenAusteilen(3);s.resize();">kein Set</button>
+        <button onclick="alert('Es gibt noch '+s.numberOfSets()+' Sets');">Sets</button>
+        <button onclick="openTeamModal()">Manage Teams</button>
     </div>
     <div class="footer">
         <hr>
         <small>Stand 02.02.24</small>
     </div>
     <script src="./js/set.js"></script>
+    <script>
+        const teamList = document.getElementById('teamList');
+        const teamNameInput = document.getElementById('teamNameInput');
+        const teamModal = document.getElementById('teamModal');
+
+        function openTeamModal() {
+            updateTeamList();
+            teamModal.style.display = 'flex';
+        }
+
+        function closeTeamModal() {
+            teamModal.style.display = 'none';
+            Set.getInstance().teamWerteAnNamensListeAnpassen();
+        }
+
+        function updateTeamList() {
+            teamList.innerHTML = '';
+            const teams = getTeamsFromLocalStorage();
+            teams.forEach((team, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = team+" ";
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => deleteTeam(index);
+                listItem.appendChild(deleteButton);
+                
+                teamList.appendChild(listItem);
+            });
+        }
+
+        function addTeam() {
+            const teamName = teamNameInput.value.trim();
+            if (teamName !== '') {
+                const teams = getTeamsFromLocalStorage();
+                teams.push(teamName);
+                setTeamsToLocalStorage(teams);
+                teamNameInput.value = '';
+                updateTeamList();
+            }
+        }
+
+        function deleteTeam(index) {
+            const teams = getTeamsFromLocalStorage();
+            teams.splice(index, 1);
+            setTeamsToLocalStorage(teams);
+            updateTeamList();
+        }
+
+        function getTeamsFromLocalStorage() {
+            return Set.getInstance().teamNames.slice(1);
+        }
+
+        function setTeamsToLocalStorage(teams) {
+            //localStorage.setItem('teams', JSON.stringify(teams));
+            Set.getInstance().teamNames = ['Nicht zugeordnet', ...teams];
+            console.log("Neue Teamliste", Set.getInstance().teamNames);
+        }
+    </script>
 
 </body>
 
