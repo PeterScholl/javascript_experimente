@@ -1,22 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bundeswettbewerb</title>
 </head>
+
 <body>
 
 
     <table>
         <tr>
             <td width="480">
-                <canvas id="canvas" style="border: none;" width="480" height="480" style="vertical-align: middle;"></canvas>
+                <canvas id="canvas" style="border: none;" width="480" height="480"
+                    style="vertical-align: middle;"></canvas>
             </td>
             <td>
                 <div class="controls">
-     
+
                     <h2>Einstellungen</h2>
 
                     <label for="input_cols">Seitenl&auml;nge: </label>
@@ -25,35 +28,41 @@
                     <button onclick="reset()">Reset</button>
 
                     <p id="info"></p>
-             
-                    
-             
+
+
+
                 </div>
-        
+
             </td>
         </tr>
 
-     
-     
+
+
     </table>
-     <p>
+    <p>
         Arthur und Renate spielen auf
-einem quadratischen Spielbrett,
-das in 7 x 7 Spielfelder unterteilt
-ist. Arthur hat zwei rote Steine,
-die anfangs im linken unteren und
-rechten oberen Eckfeld liegen,
-Renate hat zwei schwarze Steine,
-die anfangs im linken oberen und
-rechten unteren Eckfeld liegen.
-Wer am Zug ist, wählt einen seiner
-beiden Spielsteine und bewegt ihn
-in ein waagrecht oder senkrecht
-benachbartes freies Feld. Arthur und Renate ziehen abwechselnd, Arthur
-beginnt. Arthur hat gewonnen, wenn seine beiden Steine nach endlich
-vielen Zügen in waagrecht oder senkrecht benachbarten Feldern liegen.
-Kann Renate dies durch geschicktes Ziehen verhindern?
+        einem quadratischen Spielbrett,
+        das in 7 x 7 Spielfelder unterteilt
+        ist. Arthur hat zwei rote Steine,
+        die anfangs im linken unteren und
+        rechten oberen Eckfeld liegen,
+        Renate hat zwei schwarze Steine,
+        die anfangs im linken oberen und
+        rechten unteren Eckfeld liegen.
+        Wer am Zug ist, wählt einen seiner
+        beiden Spielsteine und bewegt ihn
+        in ein waagrecht oder senkrecht
+        benachbartes freies Feld. Arthur und Renate ziehen abwechselnd, Arthur
+        beginnt. Arthur hat gewonnen, wenn seine beiden Steine nach endlich
+        vielen Zügen in waagrecht oder senkrecht benachbarten Feldern liegen.
+        Kann Renate dies durch geschicktes Ziehen verhindern?
     </p>
-    <script src="./js/bwm_2024_1.js"></script>  
+    <div class="footer">
+        <hr>
+        <small>Stand 02.02.24 - Quelltext auf <a
+                href="https://github.com/PeterScholl/javascript_experimente">GitHub</a></small>
+    </div>
+    <script src="./js/bwm_2024_1.js"></script>
 </body>
+
 </html>
