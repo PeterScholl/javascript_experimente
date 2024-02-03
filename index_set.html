@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        td {
+            padding: 15px;
+            background-color: antiquewhite;
+        }
+
+        td.clicked {
+            background-color: darkgreen;
+        }
+
+    </style>
+    <title>Das Spiel Set</title>
+</head>
+
+<body onresize="resize()">
+
+    <div class="field">
+       <table id="karten">
+
+       </table>
+    </div>
+    <div id="infos">
+
+    </div>
+    <div id="bedienung">
+        <button>Reset</button>
+        <button onclick="console.log('Button');s.neueKartenAusteilen(3);s.draw();">kein Set</button>
+        <button onclick="console.log('Anzahl Sets',s.numberOfSets());">Sets</button>
+    </div>
+    <div class="footer">
+        <hr>
+        <small>Stand 02.02.24</small>
+    </div>
+    <script src="./js/set.js"></script>
+
+</body>
+
+</html>
