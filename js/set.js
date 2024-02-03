@@ -90,7 +90,7 @@ class Set {
         for (let i = 0; i < this.spielfeldkarten; i++) {
             let td = document.createElement('td');
             td.setAttribute('id', i);
-            td.innerHTML = "<img src='./img/" + (this.spielfeld[i] + 1) + ".gif' width=" + this.kartenBildWidth + ">";
+            td.innerHTML = ""+(i+1)+"<img src='./img/" + (this.spielfeld[i] + 1) + ".gif' width=" + this.kartenBildWidth + ">";
             td.addEventListener("click", (e) => { this.karteGeklickt(e.target); });
             row[currow++].appendChild(td);
             currow %= this.tableRows;
@@ -190,6 +190,11 @@ class Set {
         return k3 === this.missingsetcard(k1, k2);
     }
 
+    /**
+     * legt neue Karten vom Kartenstapel auf dem Tisch
+     * @param {int} anz Anzahl der auszuteilenden Karten
+     * @param {int} max maximale Anzahl der Karten die auf dem Tisch liegen sollen 
+     */
     neueKartenAusteilen(anz, max = 21) {
         console.log("Neue Karten", anz);
         for (let i = 0; i < anz; i++) { // maximal anz neue Karten
@@ -199,16 +204,18 @@ class Set {
         }
     }
 
-    resize() { //wird aufgerufen, wenn der Bildschirm verändert wird
-        //console.log("Avail-height:", window.innerHeight, "Avail-width", window.innerWidth);
-        // Berechne Zeilen und Breite einer Karte
+    /**
+     * berechnet/setzt die Größe der Karten passend zum Bildschirm
+     */
+    resize() { 
+        // Berechne Anzahl der Zeilen und Breite einer Karte
         if (window.innerHeight > 1.1* window.innerWidth) {
             //Der Bildschirm ist deutlich Höher als Breit
             //console.log("Bildschrim hochkant", window.innerHeight, window.innerWidth);
             let nrZeilen = Math.floor(window.innerHeight * 5 / window.innerWidth);
             this.tableRows = nrZeilen;
             //Bildwidth muss ausreichen um 21/nrZeilen Karten darzustellen
-            this.kartenBildWidth = window.innerWidth * nrZeilen / 21 -30 ;
+            this.kartenBildWidth = window.innerWidth * nrZeilen / 21 -30 ; //-30 für das Padding
         } else {
             this.tableRows = 3;
             this.kartenBildWidth = window.innerWidth / 8 -30; //30 für das Padding
