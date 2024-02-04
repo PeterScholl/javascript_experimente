@@ -26,6 +26,7 @@ class Set {
             this.topkarte = 0; //nächste Karte des gemischten Stapels
             this.tableRows = 3; //Anzahl Tabellenspalten
             this.kartenBildWidth = 200; //Weite eines Bildes in Pixeln
+            this.zeilenOffset = 0;
             this.resize(); //größen bestimmen
         }
     }
@@ -285,6 +286,9 @@ class Set {
 
         let alpha = (width / 1.5) / height;
         let anzZeilen = Math.ceil(Math.sqrt(anzahlKarten / alpha));
+        if (anzZeilen+this.zeilenOffset > 0) {
+            anzZeilen+=this.zeilenOffset;
+        }
         this.tableRows = anzZeilen;
         //Jetzt noch die richtige Weite ausrechnen
         let anzSpalten = Math.ceil(anzahlKarten / anzZeilen);
@@ -322,6 +326,12 @@ class Set {
         this.drawInfoFeld();
     }
 
+    changeZeilenOffset(change) {
+        this.zeilenOffset+=change;
+        console.log("Zeilenoffset:", this.zeilenOffset);
+        this.resize();
+    }
+
     /**
      * führt irgendwelche Tests aus, die für die Programmierung wichtig sind
      */
@@ -331,7 +341,8 @@ class Set {
         text += "Window inner Width: " + window.innerWidth + "\n";
         text += "Screen available Width: " + screen.availWidth +"\n";
         text += "this.kartenBildWidth: " + this.kartenBildWidth + "\n";
-        text += "Zeilen: " + this.tableRows;
+        text += "Zeilen: " + this.tableRows +"\n";
+        text += "Zeilenoffset: " + this.zeilenOffset;
         alert(text);
     }
 }
