@@ -128,7 +128,7 @@ class Set {
             infoHTML += "<br>";
             //Team Buttons
             this.teamNames.slice(1).forEach((name, id) => {
-                infoHTML += "<button onclick='Set.getInstance().manageWon(" + (id+1) + ")' class='teams'>" + name + " (" + this.won[id+1] + ")</button>";
+                infoHTML += "<button onclick='Set.getInstance().manageWon(" + (id + 1) + ")' class='teams'>" + name + " (" + this.won[id + 1] + ")</button>";
             })
         }
         infoHTML += "</p>";
@@ -278,20 +278,28 @@ class Set {
      * Alternative Resize Methode, die die Kartengröße nach der Anzahl der Spielkarten ausrechnet
      */
     resize() {
-        let height = window.innerHeight - 250; // Höhe ohne 250 px für die Buttons/Bedienung
-        let width = window.innerWidth;
+        let height = Math.min(window.innerHeight,screen.availHeight) - 250; // Höhe ohne 250 px für die Buttons/Bedienung
+        let width = Math.min(window.innerWidth,screen.availWidth);
         let anzahlKarten = Math.max(15, this.spielfeldkarten); //es soll immer Platz für 15 Karten sein
         //Faktor zwischen Länge und Breite eines Kartenfeldes wird mit 1.5 angenommen
 
-        let alpha = (width/1.5)/height;
-        let anzZeilen = Math.ceil(Math.sqrt(anzahlKarten/alpha));
+        let alpha = (width / 1.5) / height;
+        let anzZeilen = Math.ceil(Math.sqrt(anzahlKarten / alpha));
         this.tableRows = anzZeilen;
         //Jetzt noch die richtige Weite ausrechnen
-        let anzSpalten = Math.ceil(anzahlKarten/anzZeilen);
-        let kartenWidthFit = width/anzSpalten-50;
-        let kartenHeightFit = (height/anzZeilen-50)*1.5;
-        this.kartenBildWidth = Math.min(kartenWidthFit,kartenHeightFit);
-        console.log("Anzahl Zeilen mit resize2",anzZeilen);
+        let anzSpalten = Math.ceil(anzahlKarten / anzZeilen);
+        let kartenWidthFit = width / anzSpalten - 50;
+        let kartenHeightFit = (height / anzZeilen - 50) * 1.5;
+        if (kartenWidthFit<0) {
+            kartenWidthFit+=50;
+        }
+        if (kartenHeightFit < 10) {
+            kartenHeightFit = kartenWidthFit
+        }
+        
+        this.kartenBildWidth = Math.min(kartenWidthFit, kartenHeightFit);
+        this.kartenBildWidth = Math.max(this.kartenBildWidth,30);
+        console.log("Anzahl Zeilen mit resize2", anzZeilen);
         this.draw();
     }
 
@@ -302,16 +310,29 @@ class Set {
      */
     manageWon(teamId) {
         //gefundenes Set diesem team zuordnen - oder abziehen
-        console.log("manageWon - teamID: ",teamId, "won0: ", this.won[0]);
+        console.log("manageWon - teamID: ", teamId, "won0: ", this.won[0]);
         console.dir(this.won);
-        if (this.won[0]>0) {
-            this.won[teamId]+=1;
-            this.won[0]-=1;
-        } else if (this.won[teamId]>0) {
-            this.won[0]+=1;
-            this.won[teamId]-=1;
+        if (this.won[0] > 0) {
+            this.won[teamId] += 1;
+            this.won[0] -= 1;
+        } else if (this.won[teamId] > 0) {
+            this.won[0] += 1;
+            this.won[teamId] -= 1;
         }
         this.drawInfoFeld();
+    }
+
+    /**
+     * führt irgendwelche Tests aus, die für die Programmierung wichtig sind
+     */
+    test() {
+        let text = "Window inner Height: " + window.innerHeight + "\n";
+        text += "Screen available Height: " + screen.availHeight + "\n";
+        text += "Window inner Width: " + window.innerWidth + "\n";
+        text += "Screen available Width: " + screen.availWidth +"\n";
+        text += "this.kartenBildWidth: " + this.kartenBildWidth + "\n";
+        text += "Zeilen: " + this.tableRows;
+        alert(text);
     }
 }
 

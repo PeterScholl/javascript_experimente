@@ -6,7 +6,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        body, button, li, input {
+        body,
+        button,
+        li,
+        input {
             font-size: 1.3em;
         }
 
@@ -54,8 +57,8 @@
         <div id="modalContent">
             <h2>Team Management</h2>
             <ul id="teamList"></ul>
-            <input type="text" id="teamNameInput" placeholder="Enter Team Name">
-            <button onclick="addTeam()">Add Team</button>
+            <input type="text" id="teamNameInput" placeholder="Enter Team Name" onkeypress="handleKeyPress(event)">
+            <button onclick="addTeam()">Apply</button>
             <button onclick="closeTeamModal()">Close</button>
         </div>
     </div>
@@ -73,16 +76,21 @@
         <button onclick="s.neueKartenAusteilen(3);s.resize();">kein Set</button>
         <button onclick="alert('Es gibt noch '+s.numberOfSets()+' Sets');">Sets</button>
         <button onclick="openTeamModal()">Manage Teams</button>
+        <!-- Test button -->
+        <button onclick="s.test()">Test</button>
+        <!-- Test button ende -->
     </div>
     <div class="footer">
         <hr>
-        <small>Stand 02.02.24 - Quelltext auf <a href="https://github.com/PeterScholl/javascript_experimente">GitHub</a></small>
+        <small>Stand 02.02.24 - Quelltext auf <a
+                href="https://github.com/PeterScholl/javascript_experimente">GitHub</a></small>
     </div>
     <script src="./js/set.js"></script>
     <script>
         const teamList = document.getElementById('teamList');
         const teamNameInput = document.getElementById('teamNameInput');
         const teamModal = document.getElementById('teamModal');
+        let editingIndex = -1;
 
         function openTeamModal() {
             updateTeamList();
@@ -99,13 +107,21 @@
             const teams = getTeamsFromLocalStorage();
             teams.forEach((team, index) => {
                 const listItem = document.createElement('li');
-                listItem.textContent = team+" ";
+                listItem.textContent = team + " ";
 
                 const deleteButton = document.createElement('button');
                 deleteButton.textContent = 'Delete';
                 deleteButton.onclick = () => deleteTeam(index);
                 listItem.appendChild(deleteButton);
-                
+
+
+
+                const editButton = document.createElement('button');
+                editButton.style.marginLeft = "15px";
+                editButton.textContent = 'Edit';
+                editButton.onclick = () => editTeam(index);
+                listItem.appendChild(editButton);
+
                 teamList.appendChild(listItem);
             });
         }
@@ -114,11 +130,22 @@
             const teamName = teamNameInput.value.trim();
             if (teamName !== '') {
                 const teams = getTeamsFromLocalStorage();
-                teams.push(teamName);
+                if (editingIndex === -1) {
+                    teams.push(teamName);
+                } else {
+                    teams[editingIndex] = teamName;
+                    editingIndex = -1;
+                }
                 setTeamsToLocalStorage(teams);
                 teamNameInput.value = '';
                 updateTeamList();
             }
+        }
+
+        function editTeam(index) {
+            const teams = getTeamsFromLocalStorage();
+            teamNameInput.value = teams[index];
+            editingIndex = index;
         }
 
         function deleteTeam(index) {
@@ -126,6 +153,12 @@
             teams.splice(index, 1);
             setTeamsToLocalStorage(teams);
             updateTeamList();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                addTeam();
+            }
         }
 
         function getTeamsFromLocalStorage() {
