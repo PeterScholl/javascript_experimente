@@ -13,15 +13,41 @@
             font-size: 1.3em;
         }
 
-        td {
-            padding: 15px;
+        /* Kartendarstellung */
+        .row::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .row {
+            border: 1px solid red;
             background-color: antiquewhite;
         }
 
-        td.clicked {
+        .cell {
+            display: block;
+            float: left;
+            padding: 10px;
+            background-color: antiquewhite;
+        }
+
+        .clicked {
             background-color: darkgreen;
         }
 
+        /* Text / Nummern in den Karten positionieren */
+        .container {
+            position: relative;
+        }
+        .topleft {
+            position: absolute;
+            top: 8px;
+            left: 14px;
+            font-size: 1.2vw;
+        }
+
+        /* Team modal Einstellungen */
         button.teams {
             margin-right: 15px;
             margin-top: 10px;
@@ -38,6 +64,7 @@
             background-color: rgba(0, 0, 0, 0.5);
             justify-content: center;
             align-items: center;
+            z-index: 1;
         }
 
         #modalContent {
@@ -64,9 +91,7 @@
     </div>
     <!-- Team modal end -->
     <div class="field">
-        <table id="karten">
-
-        </table>
+       
     </div>
     <div id="infos">
 
