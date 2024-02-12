@@ -24,21 +24,23 @@
         }
 
         .dropdown {
-            position: absolute;
+            position: relative;
+            float: right;
             top: 0px;
             right: 0px;
             z-index: 1;
-            display: inline-block;
+            display: block;
         }
 
         .dropdown-content {
             display: none;
             position: absolute;
             right: 0;
+            bottom: 50px;
             background-color: #f9f9f9;
             min-width: 160px;
             box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-            z-index: 1;
+            z-index: 2;
         }
 
         .dropdown-content a {
@@ -93,7 +95,7 @@
             position: absolute;
             top: 8px;
             left: 14px;
-            font-size: 1.2vw;
+            font-size: 1.2em;
         }
 
         /* Team modal Einstellungen */
@@ -140,22 +142,22 @@
     </div>
     <!-- Team modal end -->
     <div>
-        <div class="dropdown">
-            <button class="dropbtn">Menu</button>
-            <div class="dropdown-content">
-                <a href="#" onclick="s.neueKartenAusteilen(3);s.resize();">kein Set</a>
-                <a href="#" onclick="s.reset()">Reset</a>
-                <a href="#" onclick="alert('Es gibt noch '+s.numberOfSets()+' Sets');">Sets</a>
-                <a href="#" onclick="openTeamModal()">Teams</a>
-                <a href="#" onclick="s.changeZeilenOffset(-1);">Zeile -</a>
-                <a href="#" onclick="s.changeZeilenOffset(1);">Zeile +</a>
-            </div>
-        </div>
         <div class="field">
 
         </div>
     </div>
-    <div id="infos">
+    <div class="dropdown">
+        <button class="dropbtn">Menu</button>
+        <div class="dropdown-content">
+            <a href="#" onclick="s.reset()">Reset</a>
+            <a href="#" onclick="alert('Es gibt noch '+s.numberOfSets()+' Sets');">Sets</a>
+            <a href="#" onclick="s.changeZeilenOffset(-1);">Zeile -</a>
+            <a href="#" onclick="s.changeZeilenOffset(1);">Zeile +</a>
+            <a href="#" onclick="openTeamModal()">Teams</a>
+            <a href="#" onclick="s.neueKartenAusteilen(3);s.resize();">kein Set</a>
+        </div>
+    </div>
+<div id="infos">
 
     </div>
     <div class="footer">
