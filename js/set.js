@@ -92,21 +92,23 @@ class Set {
      */
     draw() {
         //Alle Tabellenzeilen löschen - mit Karten befüllen - erste Karte erste Zeile, zweite Karte zweite ...
-        let html_spielfeld = document.getElementById('karten');
+        let html_spielfeld = document.querySelector('div.field');
         html_spielfeld.innerHTML = "";
-        const anzKartenInZeile = Math.ceil(this.spielfeldkarten / 3);
         let row = []; //Zeilen
         for (let i = 0; i < this.tableRows; i++) {
-            row.push(document.createElement('tr'));
-            html_spielfeld.appendChild(row[i]);
+            let rowdiv = document.createElement('div');
+            rowdiv.classList.add("row"); 
+            row.push(rowdiv);
+            html_spielfeld.appendChild(rowdiv);
         }
         let currow = 0; //aktuelle Zeile die befüllt wird
         for (let i = 0; i < this.spielfeldkarten; i++) {
-            let td = document.createElement('td');
+            let td = document.createElement('div');
             td.setAttribute('id', i);
+            td.classList.add('cell','container');
             // so gestalten, dass die Zahl im Bild erscheint
-            td.innerHTML = "<div class='container'><img src='./img/" + (this.spielfeld[i] + 1) + ".gif' width=" + this.kartenBildWidth + ">"+
-            "<div class='topleft'>"+(i+1)+"</div></div>";
+            td.innerHTML = "<img src='./img/" + (this.spielfeld[i] + 1) + ".gif' width=" + this.kartenBildWidth + ">"+
+            "<div class='topleft'>"+(i+1)+"</div>";
             td.addEventListener("click", (e) => { this.karteGeklickt(e.target); });
             row[currow++].appendChild(td);
             currow %= this.tableRows;
@@ -152,7 +154,7 @@ class Set {
         target.classList.toggle("clicked");
 
         //prüfen, ob drei Karten angeklickt wurden
-        let clickedCards = document.querySelectorAll("td.clicked");
+        let clickedCards = document.querySelectorAll("div.clicked");
         console.log("Anzahl geklickter Karten:", clickedCards.length);
         if (clickedCards.length === 3) { //drei Karten wurden geklickt - prüfen
             let karten = []; //die drei angeklickten Karten
@@ -281,12 +283,12 @@ class Set {
      * Alternative Resize Methode, die die Kartengröße nach der Anzahl der Spielkarten ausrechnet
      */
     resize() {
-        let height = Math.min(window.innerHeight,screen.availHeight) - 250; // Höhe ohne 250 px für die Buttons/Bedienung
+        let height = Math.min(window.innerHeight,screen.availHeight) - 200; // Höhe ohne 250 px für die Buttons/Bedienung
         let width = Math.min(window.innerWidth,screen.availWidth);
         let anzahlKarten = Math.max(15, this.spielfeldkarten); //es soll immer Platz für 15 Karten sein
         //Faktor zwischen Länge und Breite eines Kartenfeldes wird mit 1.5 angenommen
 
-        let alpha = (width / 1.5) / height;
+        let alpha = (width / 1.2) / height;
         let anzZeilen = Math.ceil(Math.sqrt(anzahlKarten / alpha));
         if (anzZeilen+this.zeilenOffset > 0) {
             anzZeilen+=this.zeilenOffset;
@@ -294,8 +296,8 @@ class Set {
         this.tableRows = anzZeilen;
         //Jetzt noch die richtige Weite ausrechnen
         let anzSpalten = Math.ceil(anzahlKarten / anzZeilen);
-        let kartenWidthFit = width / anzSpalten - 50;
-        let kartenHeightFit = (height / anzZeilen - 50) * 1.5;
+        let kartenWidthFit = width / anzSpalten - 30;
+        let kartenHeightFit = (height / anzZeilen - 30) * 1.5;
         if (kartenWidthFit<0) {
             kartenWidthFit+=50;
         }
@@ -305,7 +307,7 @@ class Set {
         
         this.kartenBildWidth = Math.min(kartenWidthFit, kartenHeightFit);
         this.kartenBildWidth = Math.max(this.kartenBildWidth,30);
-        console.log("Anzahl Zeilen mit resize2", anzZeilen);
+        console.log("Anzahl Zeilen mit resize", anzZeilen);
         this.draw();
     }
 
