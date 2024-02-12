@@ -261,26 +261,7 @@ class Set {
     }
 
     /**
-     * berechnet/setzt die Größe der Karten passend zum Bildschirm und zur Kartenanzahl
-     */
-    resize2() {
-        // Berechne Anzahl der Zeilen und Breite einer Karte
-        if (window.innerHeight > 1.1 * window.innerWidth) {
-            //Der Bildschirm ist deutlich Höher als Breit
-            //console.log("Bildschrim hochkant", window.innerHeight, window.innerWidth);
-            let nrZeilen = Math.floor(window.innerHeight * 5 / window.innerWidth);
-            this.tableRows = nrZeilen;
-            //Bildwidth muss ausreichen um 21/nrZeilen Karten darzustellen
-            this.kartenBildWidth = window.innerWidth * nrZeilen / 21 - 30; //-30 für das Padding
-        } else {
-            this.tableRows = 3;
-            this.kartenBildWidth = window.innerWidth / 8 - 30; //30 für das Padding
-        }
-        this.draw();
-    }
-
-    /**
-     * Alternative Resize Methode, die die Kartengröße nach der Anzahl der Spielkarten ausrechnet
+     * Resize Methode, die die Kartengröße nach der Anzahl der Spielkarten ausrechnet
      */
     resize() {
         let height = Math.min(window.innerHeight,screen.availHeight) - 200; // Höhe ohne 250 px für die Buttons/Bedienung
