@@ -104,7 +104,9 @@ class Set {
         for (let i = 0; i < this.spielfeldkarten; i++) {
             let td = document.createElement('td');
             td.setAttribute('id', i);
-            td.innerHTML = "" + (i + 1) + "<img src='./img/" + (this.spielfeld[i] + 1) + ".gif' width=" + this.kartenBildWidth + ">";
+            // so gestalten, dass die Zahl im Bild erscheint
+            td.innerHTML = "<div class='container'><img src='./img/" + (this.spielfeld[i] + 1) + ".gif' width=" + this.kartenBildWidth + ">"+
+            "<div class='topleft'>"+(i+1)+"</div></div>";
             td.addEventListener("click", (e) => { this.karteGeklickt(e.target); });
             row[currow++].appendChild(td);
             currow %= this.tableRows;
