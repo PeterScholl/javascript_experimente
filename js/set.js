@@ -72,6 +72,7 @@ class Set {
         this.won = Array(this.teams + 1).fill(0); //Zähler für gefundene Sets je Team + Sammel
         this.lost = Array(this.teams + 1).fill(0);; //Zähler für Fehlschläge
 
+        this.resize();
         this.draw();
     }
 

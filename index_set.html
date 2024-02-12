@@ -13,6 +13,53 @@
             font-size: 1.3em;
         }
 
+        /* Dropdown-Menü*/
+        .dropbtn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            z-index: 1;
+            display: inline-block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #3e8e41;
+        }
+
         /* Kartendarstellung */
         .row::after {
             content: "";
@@ -21,8 +68,9 @@
         }
 
         .row {
-            border: 1px solid red;
-            background-color: antiquewhite;
+            /*border: 1px solid red;
+            background-color: antiquewhite;*/
+            display: block;
         }
 
         .cell {
@@ -40,6 +88,7 @@
         .container {
             position: relative;
         }
+
         .topleft {
             position: absolute;
             top: 8px;
@@ -90,26 +139,28 @@
         </div>
     </div>
     <!-- Team modal end -->
-    <div class="field">
-       
+    <div>
+        <div class="dropdown">
+            <button class="dropbtn">Menu</button>
+            <div class="dropdown-content">
+                <a href="#" onclick="s.neueKartenAusteilen(3);s.resize();">kein Set</a>
+                <a href="#" onclick="s.reset()">Reset</a>
+                <a href="#" onclick="alert('Es gibt noch '+s.numberOfSets()+' Sets');">Sets</a>
+                <a href="#" onclick="openTeamModal()">Teams</a>
+                <a href="#" onclick="s.changeZeilenOffset(-1);">Zeile -</a>
+                <a href="#" onclick="s.changeZeilenOffset(1);">Zeile +</a>
+            </div>
+        </div>
+        <div class="field">
+
+        </div>
     </div>
     <div id="infos">
 
     </div>
-    <div id="bedienung">
-        <button onclick="s.reset();">Reset</button>
-        <button onclick="s.neueKartenAusteilen(3);s.resize();">kein Set</button>
-        <button onclick="alert('Es gibt noch '+s.numberOfSets()+' Sets');">Sets</button>
-        <button onclick="openTeamModal()">Teams</button>
-        <button onclick="s.changeZeilenOffset(-1);">Zeile weniger</button>
-        <button onclick="s.changeZeilenOffset(1);">Zeile mehr</button>
-        <!-- Test button ->
-        <button onclick="s.test()">Test</button>
-        <!-- Test button ende -->
-    </div>
     <div class="footer">
         <hr>
-        <small>Stand 02.02.24 - Quelltext auf <a
+        <small>Stand 12.02.24 - Quelltext auf <a
                 href="https://github.com/PeterScholl/javascript_experimente">GitHub</a></small>
     </div>
     <script src="./js/set.js"></script>
