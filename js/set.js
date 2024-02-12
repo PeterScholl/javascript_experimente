@@ -265,7 +265,7 @@ class Set {
      * Resize Methode, die die Kartengröße nach der Anzahl der Spielkarten ausrechnet
      */
     resize() {
-        let height = Math.min(window.innerHeight,screen.availHeight) - 200; // Höhe ohne 250 px für die Buttons/Bedienung
+        let height = Math.min(window.innerHeight,screen.availHeight) - 140; // Höhe ohne 140 px für die Buttons/Bedienung
         let width = Math.min(window.innerWidth,screen.availWidth);
         let anzahlKarten = Math.max(15, this.spielfeldkarten); //es soll immer Platz für 15 Karten sein
         //Faktor zwischen Länge und Breite eines Kartenfeldes wird mit 1.5 angenommen
