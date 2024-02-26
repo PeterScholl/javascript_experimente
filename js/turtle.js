@@ -6,7 +6,7 @@ draw();
 
 function draw() {
     //Hier wird gezeichnet
-    ctx.fillStyle = 'white';  //erst mal löschen - alles weiß
+    ctx.fillStyle = 'lightgray';  //erst mal löschen - alles weiß
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.fillStyle = 'black'; //wir malen mit schwarz
     ctx.fillStyle = 'rgb(50, 250, 50 , 0.5)'; //rot grün blau transparenz 

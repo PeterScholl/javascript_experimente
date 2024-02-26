@@ -16,8 +16,11 @@ class Border {
     }
 }
 
+/**
+ * representiert ein einzelnes Feld eines Spielplans
+ */
 class Feld {
-    typ = 0; //0 Wüste/Desert - 1 Wiese/Meadow
+    typ = 0; //0 Wüste/Desert - 1 Wiese/Meadow - (-1 undefiniert?)
     value = 0; //Falls Wiesenfeld mit Zahl
     isCactus = false;
     isCow = false;
@@ -57,6 +60,12 @@ class Feld {
         }
     }
 
+    /**
+     * gibt das Feld an der Position i, wenn es existiert, sonst null
+     * @param {Integer} i Feldnummer 
+     * @returns Das Feld an dieser Position sonst null
+     */
+
     static gibFeldNr(i) {
         if (!Number.isInteger(i) || i < 0 || i >= field.length) {
             return null;
@@ -64,6 +73,10 @@ class Feld {
         return field[i];
     }
 
+    /**
+     * prüft ob dieses Feld ein Randfeld ist
+     * @returns true oder false
+     */
     istRandFeld() {
         if (this.id < cols || this.id >= field.length - cols || this.id % cols == 0 || this.id % cols == cols - 1) {
             return true;
@@ -71,6 +84,10 @@ class Feld {
         return false;
     }
 
+    /**
+     * gibt eine Liste der vier Nachbarfelder (mindestens 2 bei einer Ecke)
+     * @returns Liste der Nachbarfelder
+     */
     gibNachbarn() {
         let res = [];
         for (let i = 0; i < 4; i++) { //alle Richtungen
@@ -81,6 +98,12 @@ class Feld {
         }
         return res;
     }
+
+    /**
+     * prüft ob ein existierendes Nachbarfeld dieses Feldes den geforderten Typ hat
+     * @param {Integer} typ 0- Wüste 1 - Wiese 
+     * @returns true oder false
+     */
 
     istNachbarVon(typ) {
         for (let i = 0; i < 4; i++) { //alle Richtungen

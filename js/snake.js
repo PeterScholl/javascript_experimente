@@ -62,6 +62,13 @@ function keyDown(e) {
     if (e.key == 'p') {
         togglePause();
     }
+    if (e.key == '+') {
+        intervallTime-=5;
+        if (intervallTime<50) {
+            intervallTime=50;
+        }
+        updateTimer();
+    }
     if (e.key == 'a') { //toggle Autopilot
         autopilot = !autopilot;
         document.getElementById('info').innerHTML = "Autopilot: " + autopilot;
