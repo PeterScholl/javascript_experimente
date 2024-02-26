@@ -338,9 +338,11 @@ class Feld {
                 this.componente = 0; //offene Komponente
             } else if (f.typ == this.typ) {
                 //Componente anpassen
-                if (this.componente >= f.componente) {
+                if (this.componente > f.componente) {
                     this.componente = f.componente;
-                } else {
+                    this.updateComponente();
+                    return;
+                } else if (this.componente < f.componente) {
                     f.componente = this.componente;
                     f.updateComponente();
                 }
@@ -370,6 +372,10 @@ class Feld {
         //console.dir("Deserts:", d, "Meadows", m, "zd", zd, "zm", zm);
         return [zm.length, zd.length];
     }
+
+    static FeldtoString() {
+        return Feld.field.map((e) => {return e.typ;}).toString();
+    }
 }
 
 
@@ -391,6 +397,17 @@ for (let i = 0; i < Feld.field.length; i++) {
         Feld.field[i].isCow = true;
     }
 }
+
+Feld.neuesFeld();
+Feld.field[0].value = 3;
+Feld.field[2].value = 5;
+Feld.field[10].value = 7;
+Feld.field[8].isCow = true;
+Feld.field[5].isCactus = true;
+Feld.field[7].isCactus = true;
+Feld.field[13].isCactus = true;
+Feld.field[15].isCactus = true;
+
 
 
 document.addEventListener('keydown', keyDown); //wer weiß wan man den brauchen kann ;-)
@@ -595,7 +612,15 @@ function solve() {
 function solutions() {
     let results = []; //hier sammeln wir die gültigen Lösungen
     let pos = 0; // wir starten am Anfang
+    //Alle Felder zurücksetzen
+    Feld.field.forEach((e) => {if (!e.typeIsFix()) e.typ=-1;});
+    let count = 0;
     while (pos >= 0) {
+        if (count > 100) {
+            draw();
+            alert("Anzeige: "+ count);
+            count=0;
+        }
         if (pos >= Feld.field.length) {
             //Alle Feldtypen sind gesetzt Gültigkeit checken
             if (Feld.istGueltig(true)) {
@@ -609,23 +634,27 @@ function solutions() {
                     pos--;
                 } else if (Feld.field[pos].typ < 1) {
                     Feld.field[pos].typ += 1;
+                    count++;
                     changed = true;
                     pos++;
                 } else {
                     Feld.field[pos].typ = -1; // zurücksetzen
+                    count++;
                     pos--;
                 }
             }
         } else {
-            // Wenn jetzt schon ungültig, dann zurücksetzen
+            // Wenn jetzt schon ungültig, dann zurücksetzen oder weitersetzen
             if (!Feld.istGueltig()) {
+                console.log(Feld.FeldtoString());
+                console.log(Feld.istGueltig());
                 let changed = false;
-                pos--;
                 while (!changed && pos >= 0) {
-                    if (Feld.field[pos].typeIsFix()) {
+                    if (Feld.field[pos].typeIsFix() || Feld.field[pos].typ == -1) {
                         pos--;
                     } else if (Feld.field[pos].typ < 1) {
                         Feld.field[pos].typ += 1;
+                        count++;
                         changed = true;
                         pos++;
                     } else {
@@ -639,6 +668,7 @@ function solutions() {
                     pos++;
                 } else {
                     Feld.field[pos].typ += 1;
+                    count++;
                     pos++;
                 }
             }
@@ -660,3 +690,4 @@ function gameLoop() {
 }
 
 
+// 1,0,1,1,1,0,1,0,1,-1,1,-1,-1,0,-1,0
