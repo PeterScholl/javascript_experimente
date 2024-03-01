@@ -366,8 +366,7 @@ class Feld {
         }
         m.forEach((f) => { f.updateComponente(); });
         d.forEach((f) => { f.updateComponente(); });
-        let zm = [... new Set(m.filter((f) => { return f.componente > 0; })
-            .map((f) => { return f.componente; }))];
+        let zm = [... new Set(m.map((f) => { return f.componente; }))];
         let zd = [... new Set(d.map((f) => { return f.componente; }))];
         //console.dir("Deserts:", d, "Meadows", m, "zd", zd, "zm", zm);
         return [zm.length, zd.length];
@@ -616,7 +615,7 @@ function solutions() {
     Feld.field.forEach((e) => {if (!e.typeIsFix()) e.typ=-1;});
     let count = 0;
     while (pos >= 0) {
-        if (count > 100) {
+        if (count < -100) {
             draw();
             alert("Anzeige: "+ count);
             count=0;
