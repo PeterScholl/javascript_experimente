@@ -249,8 +249,8 @@ class Feld {
      * @returns String, der den Inhalt des Feldes beschreibt
      */
     toString() {
-        if (this.isCow) return "c";
-        if (this.isCactus) return "C";
+        if (this.isCow) return "🐮"; //Kuhgesicht von zeichen.tv
+        if (this.isCactus) return "🌵";
         if (this.isNr) return "" + this.value;
         return "_";
     }
@@ -461,6 +461,8 @@ function draw() {
             let input = document.createElement('input');
             input.setAttribute("type", "text");
             input.value = this.innerHTML;
+            if (this.innerHTML == "🌵") input.value = "C";
+            if (this.innerHTML == "🐮") input.value = "c";
             input.style.width = this.offsetWidth - 1 - (this.clientLeft * 4) + "px";
             input.style.height = this.offsetHeight - (this.clientTop * 2) + "px";
             input.style.border = "0px transparent";
