@@ -73,15 +73,17 @@ class Feld {
      *  MM
      */
     istWuestenKandidat() {
-        let nb = this.gibNachbarn().filter((e) => { return e.typ==0;});
-        if (nb.length != 1) {
+        let nb = this.gibNachbarn();
+        let nbw = nb.filter((e) => { e.typ==0;});
+        if (4-nb.length+nbw.length != 1) {
             return false;
         }
         let achtNB = this.gibAchtUmlaufendeFelder();
         // Wüstennachbarn finden
-        pos = 0; //oben
-        while (achtNB[pos] == null || achtNB[pos].typ != 0) {
+        let pos = 0; //oben
+        while (pos<18 && !(achtNB[pos] == null || achtNB[pos].typ == 0)) {
             pos+=2;
+            console.log(pos);
         }
         // pos ist das Wüstenfeld - die fünf gegenüber auf nicht Wiese prüfen
         for (let i = 0; i < 5; i++) {
@@ -89,6 +91,7 @@ class Feld {
                 return false; //Es gibt eine Wüste bei den Feldern
             }
         }
+        console.log("true");
         return true;
     }
 
@@ -106,15 +109,15 @@ class Feld {
             if (res[i-1] == null || res[(i+1)%8] == null) {
                 res[i] = null;
             } else {
-                res[i] = res[i-1].gibFeldInRichtung((Richtung.links+(i-1)/2)%4);
+                res[i] = res[i-1].gibFeldInRichtung((Richtung.rechts+(i-1)/2)%4);
             }        
         }
         return res;
     }
 
     /**
-     * gibt ein Array der vier Nachbarfelder zurück
-     * @returns Array der Vier Nachbarfelder
+     * gibt ein Array der gültigen Nachbarfelder zurück
+     * @returns Array der Nachbarfelder die im Feld sind
      */
     gibNachbarn() {
         let res = [];
@@ -223,7 +226,7 @@ function valuesUpdated() {
     draw();
 }
 
-function createNewMeadow2(percent) {
+function createNewMeadow(percent) {
     if (!Number.isInteger(percent) || percent < 0 || percent > 100) {
         percent = 50;
     }
@@ -259,7 +262,7 @@ function createNewMeadow2(percent) {
  * erzeugen soll (keine Flecken von Wüste)
  * @param {Integer} percent Anteil der Wiese 
  */
-function createNewMeadow(percent) {
+function createNewMeadow2(percent) {
     if (!Number.isInteger(percent) || percent < 0 || percent > 100) {
         percent = 50;
     }
