@@ -67,32 +67,49 @@ class Feld {
     /**
      * prüft ob dieses Feld ein Wüstenkandidat ist, d.h.
      * ein Nachbarfeld ist Wüste und die 5 gegenüberliegenden
-     * Felder sind Wiese 
+     * Felder sind Wiese (Variante Gang)
      *  MM
      * DxM
      *  MM
+     * oder kein Diagonal benachbartes Feld ist Wüste während 
+     * die beiden gemeinsamen Nachbarn Wiese sind (Variante gang = false)
+     * @param {boolean} gang optional - standard true
      */
-    istWuestenKandidat() {
-        let nb = this.gibNachbarn();
-        let nbw = nb.filter((e) => { e.typ==0;});
-        if (4-nb.length+nbw.length != 1) {
-            return false;
-        }
-        let achtNB = this.gibAchtUmlaufendeFelder();
-        // Wüstennachbarn finden
-        let pos = 0; //oben
-        while (pos<18 && !(achtNB[pos] == null || achtNB[pos].typ == 0)) {
-            pos+=2;
-            console.log(pos);
-        }
-        // pos ist das Wüstenfeld - die fünf gegenüber auf nicht Wiese prüfen
-        for (let i = 0; i < 5; i++) {
-            if (achtNB[(pos+2+i)%8] == null || achtNB[(pos+2+i)%8].typ!=1) {
-                return false; //Es gibt eine Wüste bei den Feldern
+    istWuestenKandidat(gang = true) {
+        if (this.typ == 0) return false; //wenn schon Wüste unsinn
+        if (gang) { //Variante gang
+            let nb = this.gibNachbarn();
+            let nbw = nb.filter((e) => { return e.typ == 0; });
+            if (4 - nb.length + nbw.length != 1) {
+                return false;
             }
+            let achtNB = this.gibAchtUmlaufendeFelder();
+            // Wüstennachbarn finden
+            let pos = 0; //oben
+            while (pos < 18 && !(achtNB[pos] == null || achtNB[pos].typ == 0)) {
+                pos += 2;
+            }
+            // pos ist das Wüstenfeld - die fünf gegenüber auf nicht Wiese prüfen
+            for (let i = 0; i < 5; i++) {
+                if (achtNB[(pos + 2 + i) % 8] == null || achtNB[(pos + 2 + i) % 8].typ != 1) {
+                    return false; //Es gibt eine Wüste bei den Feldern
+                }
+            }
+            return true;
+        } else { //Variante nicht gang
+            let achtNB = this.gibAchtUmlaufendeFelder();
+            for (let i = 0; i < 4; i++) { //Wir prüfen die vier Ecken
+                if ((achtNB[2 * i] != null && achtNB[2 * i].typ == 1) &&
+                    achtNB[(2 * (i + 1)) % 8] != null && achtNB[(2 * (i + 1)) % 8].typ == 1) {
+                    //zwei senkrechte Nachbarn sind Wiese
+                    if (achtNB[2 * i + 1].typ == 0) {
+                        //Aber das Eckfeld ist Wüste
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
-        console.log("true");
-        return true;
     }
 
     /**
@@ -105,12 +122,12 @@ class Feld {
         res[4] = this.gibFeldInRichtung(Richtung.unten);
         res[6] = this.gibFeldInRichtung(Richtung.links);
         //res[3] unten rechts klären
-        for (let i = 1; i < res.length; i+=2) { //alle Ecken durchlaufen
-            if (res[i-1] == null || res[(i+1)%8] == null) {
+        for (let i = 1; i < res.length; i += 2) { //alle Ecken durchlaufen
+            if (res[i - 1] == null || res[(i + 1) % 8] == null) {
                 res[i] = null;
             } else {
-                res[i] = res[i-1].gibFeldInRichtung((Richtung.rechts+(i-1)/2)%4);
-            }        
+                res[i] = res[i - 1].gibFeldInRichtung((Richtung.rechts + (i - 1) / 2) % 4);
+            }
         }
         return res;
     }
@@ -146,6 +163,9 @@ class Feld {
 
 
 let canvas = document.getElementById('canvas');
+canvas.addEventListener('mousedown', function (e) {
+    canvasClicked(canvas, e)
+})
 let ctx = canvas.getContext('2d');
 let rows = 8;
 let cols = rows;
@@ -158,13 +178,23 @@ let cellWidth = canvas.width / cols;
 let cellHeight = canvas.height / rows;
 
 let inputRows = document.getElementById('input_rows');
+inputRows.value = rows;
 let inputCols = document.getElementById('input_cols');
+inputCols.value = cols;
+let inputFieldChosen = document.getElementById('input_field_chosen');
 let inputMeadowPercent = document.getElementById('input_meadow_percent');
+let inputVariant = document.getElementById('input_variant'); //Variante für Wiesenerzeugung
+let buttonTest = document.getElementById('button_test');
+buttonTest.addEventListener('click', (e) => {
+    //Testfunktion
+    let nrfeld = Number.parseInt(inputFieldChosen.value);
+    console.log(field[nrfeld].istWuestenKandidat());
+})
 
 
 document.addEventListener('keydown', keyDown); //wer weiß wan man den brauchen kann ;-)
 
-createNewMeadow(50);
+createNewMeadow(50,parseInt(inputVariant.value));
 draw();
 
 
@@ -210,27 +240,28 @@ function draw() {
 
 function valuesUpdated() {
     let r = Number.parseInt(inputRows.value);
-    if (r>0 && r<12) {
-        rows=r;
+    if (r > 0 && r < 12) {
+        rows = r;
     } else {
-        inputRows.value=r;
+        inputRows.value = r;
     }
     let c = Number.parseInt(inputCols.value);
-    cols=c;
+    cols = c;
     let p = Number.parseInt(inputMeadowPercent.value);
-    console.log("r,c,p",r,c,p);
-    canvas.width = canvas.height*cols/rows;
+    //console.log("r,c,p", r, c, p);
+    canvas.width = canvas.height * cols / rows;
     cellWidth = canvas.width / cols;
     cellHeight = canvas.height / rows;
-    createNewMeadow(p);
+    inputFieldChosen.setAttribute('max', (r * c - 1));
+    createNewMeadow(p,parseInt(inputVariant.value));
     draw();
 }
 
-function createNewMeadow(percent) {
+function createNewMeadow(percent, variant = 1) {
+    const nrMeadowFields = Math.round(rows * cols * percent / 100); //Nr of fields meadow
     if (!Number.isInteger(percent) || percent < 0 || percent > 100) {
         percent = 50;
     }
-    const nrMeadowFields = Math.round(rows * cols * percent / 100); //Nr of fields meadow
     //Fill field with Meadow
     field = Array(rows * cols);
     for (let i = 0; i < field.length; i++) {
@@ -240,62 +271,70 @@ function createNewMeadow(percent) {
 
     const fieldTotal = rows * cols;
     let nrDesertFields = 0;
+    switch (variant) {
+        case 0:
 
-    while (nrDesertFields < fieldTotal - nrMeadowFields) { //es sind noch zu wenige Wüstenfelder
-        //kandidaten für neue Wüstenfelder sind Wiesen die Randfelder oder Nachbarn von Wüste (0) sind.
-        const kandidaten = field.filter(e => { return e.typ == 1 && (e.istRandFeld() || e.istNachbarVon(0)); });
-        const zfl = Math.floor(Math.random() * kandidaten.length); //Zufallskandidat auswählen
-        kandidaten[zfl].typ = 0; //und zu Wüste machen
-        if (checkFieldValid()) {
-            nrDesertFields++;
-        } else {
-            kandidaten[zfl].typ = 1; //wieder zurück
-        }
+            while (nrDesertFields < fieldTotal - nrMeadowFields) { //es sind noch zu wenige Wüstenfelder
+                //kandidaten für neue Wüstenfelder sind Wiesen die Randfelder oder Nachbarn von Wüste (0) sind.
+                const kandidaten = field.filter(e => { return e.typ == 1 && (e.istRandFeld() || e.istNachbarVon(0)); });
+                const zfl = Math.floor(Math.random() * kandidaten.length); //Zufallskandidat auswählen
+                kandidaten[zfl].typ = 0; //und zu Wüste machen
+                if (checkFieldValid()) {
+                    nrDesertFields++;
+                } else {
+                    kandidaten[zfl].typ = 1; //wieder zurück
+                }
+            }
+            break;
+        case 1:
+        default:
+
+            /**
+             * zweite Funktion, die eher eine Art von Gaengen 
+             * erzeugen soll (keine Flecken von Wüste)
+             * @param {Integer} percent Anteil der Wiese 
+             */
+
+            let gang = true; //Zunächst Gänge graben - also Gradlinige Wüsten
+            while (nrDesertFields < fieldTotal - nrMeadowFields) { //es sind noch zu wenige Wüstenfelder
+                //kandidaten für neue Wüstenfelder sind 
+                // Wiesenfelder (typ1), die ein Wüstenfeld als Nachbar haben (oder Rand) und 
+                // auf der anderen Seite nur 5 Wiesen.
+                const kandidaten = field.filter(e => {
+                    return e.typ == 1 && (e.istWuestenKandidat(gang));
+                });
+                if (kandidaten.length == 0) {
+                    if (gang) {
+                        gang = false; //algemeinere Wüstenfelder zulassen
+                        continue;
+                    } else {
+                        break;
+                    }
+                }
+                const zfl = Math.floor(Math.random() * kandidaten.length); //Zufallskandidat auswählen
+                kandidaten[zfl].typ = 0; //und zu Wüste machen
+                if (checkFieldValid()) {
+                    nrDesertFields++;
+                } else {
+                    kandidaten[zfl].typ = 1; //wieder zurück
+                }
+            }
+
     }
-
-    //draw();
-    //console.log("Valid? ", checkFieldValid());
 }
 
-/**
- * zweite Funktion, die eher eine Art von Gaengen 
- * erzeugen soll (keine Flecken von Wüste)
- * @param {Integer} percent Anteil der Wiese 
- */
-function createNewMeadow2(percent) {
-    if (!Number.isInteger(percent) || percent < 0 || percent > 100) {
-        percent = 50;
-    }
-    const nrMeadowFields = Math.round(rows * cols * percent / 100); //Nr of fields meadow
-    //Fill field with Meadow
-    field = Array(rows * cols);
-    for (let i = 0; i < field.length; i++) {
-        field[i] = new Feld(i);
-        field[i].typ = 1; //Meadow - Weide
-    }
+function canvasClicked(canvas, event) {
+    const rect = canvas.getBoundingClientRect()
+    const x = event.clientX - rect.left
+    const y = event.clientY - rect.top
+    //Feld berechnen
+    const field_x = Math.floor(x / cellHeight);
+    const field_y = Math.floor(y / cellWidth);
+    const field_pos = [field_x, field_y];
 
-    const fieldTotal = rows * cols;
-    let nrDesertFields = 0;
-
-    while (nrDesertFields < fieldTotal - nrMeadowFields) { //es sind noch zu wenige Wüstenfelder
-        //kandidaten für neue Wüstenfelder sind 
-        // Wiesenfelder (typ1), die ein Wüstenfeld als Nachbar haben (oder Rand) und 
-        // auf der anderen Seite nur 5 Wiesen.
-        const kandidaten = field.filter(e => { 
-            return e.typ == 1 && (e.istWuestenKandidat()); 
-        });
-        if (kandidaten.length == 0) {
-            break;
-        }
-        const zfl = Math.floor(Math.random() * kandidaten.length); //Zufallskandidat auswählen
-        kandidaten[zfl].typ = 0; //und zu Wüste machen
-        if (checkFieldValid()) {
-            nrDesertFields++;
-        } else {
-            kandidaten[zfl].typ = 1; //wieder zurück
-        }
-    }
-
+    console.log("x: " + x + " y: " + y + " field_x: " +
+        field_x + " field_y: " + field_y);
+    inputFieldChosen.value = field_y * cols + field_x;
 }
 
 function checkFieldValid() {

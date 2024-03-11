@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JS Cows&Cactus designer</title>
 </head>
+
 <body>
     <h1>Nach Krazydad - Entwicklung eines Designers</h1>
     <p>
@@ -13,36 +15,44 @@
     <table>
         <tr>
             <td width="480">
-                <canvas id="canvas" style="border: none;" width="480" height="480" style="vertical-align: middle;"></canvas>
+                <canvas id="canvas" style="border: none;" width="480" height="480"
+                    style="vertical-align: middle;"></canvas>
             </td>
             <td>
                 <div class="controls">
-     
+
                     <h2>Einstellungen</h2>
 
-                    <label for=""input_rows">Zeilen: </label>
-                    <input type="number" value="4" id="input_rows" size="3" name="input_rows" onchange="valuesUpdated()">
-                    <label for=""input_cols">Spalten: </label>
-                    <input type="number" value="4" id="input_cols" size="3" name="input_cols" onchange="valuesUpdated()">
+                    <label for="input_rows">Zeilen: </label>
+                    <input type="number" value="4" id="input_rows" size="3" name="input_rows"
+                        onchange="valuesUpdated()">
+                    <label for="input_cols">Spalten: </label>
+                    <input type="number" value="4" id="input_cols" size="3" name="input_cols"
+                        onchange="valuesUpdated()">
                     <br>
-                    <label for=""input_meadow_percent">Prozent Wiese: </label>
-                    <input type="number" value="50" id="input_meadow_percent" size="4" name="input_meadow_percent" min="0" max="100" onchange="valuesUpdated()">
+                    <label for="input_meadow_percent">Prozent Wiese: </label>
+                    <input type="number" value="50" id="input_meadow_percent" size="4" name="input_meadow_percent"
+                        min="0" max="100" onchange="valuesUpdated()">
                     <button onclick="valuesUpdated()">Reload</button>
-                    
-
+                    <br>
+                    <label for="input_field_chosen">Gew&auml;hltes Feld: </label>
+                    <input type="number" value="0" id="input_field_chosen" size="4" name="input_field_chosen" min="0"
+                        max="100">
+                    <label for="input_variant">Zufallsvariante: </label>
+                    <input type="number" value="1" id="input_variant" size="2" name="input_variant" min="0" max="1">
+                    <br>
+                    <button id="button_test">Testbutton</button>
 
                     <p id="info"></p>
-             
-                    
-             
                 </div>
-        
+
             </td>
         </tr>
 
-     
-     
+
+
     </table>
     <script src="./js/corral.js"></script>
 </body>
+
 </html>
