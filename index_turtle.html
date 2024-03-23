@@ -1,19 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JS Crashkurs - Idee Turtle</title>
 </head>
+
 <body>
     <h1>Aus dem Snake-Canvas kann man doch auch ein Zeichenbrett machen...</h1>
-    
-    <canvas id="canvas" width="480" height="480"></canvas>
+    <div>
+        <canvas id="canvas" width="480" height="480"></canvas>
+    </div>
+    <div class="controls">
+
+        <h2>Einstellungen</h2>
+
+        <label for="delay">DELAY: </label>
+        <input type="number" value="50" id="delay" size="4" name="delay" min="0" max="100">
+    </div>
+
     <div class="footer">
         <hr>
-        <small>Stand 18.03.24 - Quelltext auf <a href="https://github.com/PeterScholl/javascript_experimente">GitHub</a></small>
+        <small>Stand 18.03.24 - Quelltext auf <a
+                href="https://github.com/PeterScholl/javascript_experimente">GitHub</a></small>
     </div>
     <script src="./js/c_turtle.js"></script>
     <script src="./js/turtle.js"></script>
 </body>
+
 </html>

@@ -32,6 +32,9 @@ async function draw() {
     //fisch(3.5); //Malt einen größeren Fisch
     */
     let t = new Turtle(canvas);
+    let delayinput = document.getElementById('delay');
+    delayinput.addEventListener('change',() => {t.delaytime = Number.parseInt(delayinput.value);});
+
     t.goto(200, 200);
     t.pendown();
     t.goto(280, 280);
@@ -39,7 +42,7 @@ async function draw() {
     t.goto(200, 200);
     for (let w = 1; w < 50; w++) {
         for (let i = 0; i < 73; i++) {
-            await t.forward(w);
+            t.forward(w);
             t.turnright(-5);
         }
     }
@@ -57,4 +60,7 @@ function fisch(faktor) {
     ctx.lineJoin = 'round'; //Die Übergänge von einer Linie zur nächsten sind rund
     ctx.stroke();
 }
+
+
+
 
