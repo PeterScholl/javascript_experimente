@@ -27,11 +27,11 @@ function reset() {
     const input_rows = document.getElementById('input_rows').value;
     const n = Number.parseInt(input_cols);
     if (!isNaN(n)) {
-        cols = Math.max(n,3);
+        cols = Math.max(n, 3);
     }
     const m = Number.parseInt(input_rows);
     if (!isNaN(m)) {
-        rows = Math.max(m,3);
+        rows = Math.max(m, 3);
     }
     //console.log(input_cols,n,width);
     pos_schwarz = [];
@@ -41,7 +41,7 @@ function reset() {
     feld_gewaehlt = null;
     field_width_px = canvas.width / cols;
     field_height_px = canvas.height / rows;
-    infoField.innerHTML="";
+    showInfoAmZug();
     draw();
 }
 
@@ -58,15 +58,19 @@ function keyDown(e) {
     }
     if (e.key == 'z') { // Zug zurück
         if (moves.length > 0) {
-            console.log("Moves Length",moves.length);
-            [pos_rot,pos_schwarz,pos_start_end,amZug] = moves.pop();
-            if (pos_rot.length+pos_schwarz.length==0) pos_start_end=[];
-            feld_gewaehlt=null;
+            console.log("Moves Length", moves.length);
+            [pos_rot, pos_schwarz, pos_start_end, amZug] = moves.pop();
+            if (pos_rot.length + pos_schwarz.length == 0) pos_start_end = [];
+            feld_gewaehlt = null;
+            showInfoAmZug();
             draw();
         }
     }
 }
 
+function showInfoAmZug() {
+    infoField.innerHTML = `${amZug ? "Erhard (rot)" : "Renate (schwarz)"} ist am Zug`;
+}
 function canvasClicked(canvas, event) {
     infoField.innerHTML = "";
     const rect = canvas.getBoundingClientRect()
@@ -90,13 +94,13 @@ function canvasClicked(canvas, event) {
                 feld_gewaehlt = field_pos
             } else {
                 //es gibt einen gefärbten Bereich
-                e = findePassendesEnde(field_pos); 
-                console.log("Passende Enden",e,"pos_start_end",pos_start_end);
-                if (e.length==1) {
+                e = findePassendesEnde(field_pos);
+                console.log("Passende Enden", e, "pos_start_end", pos_start_end);
+                if (e.length == 1) {
                     //Der Zug ist eindeutig
-                    console.log("Eindeutiger Zug von",e,"nach",field_pos);
-                    ziehe(e[0],field_pos);
-                } else if (e.length==2) {
+                    console.log("Eindeutiger Zug von", e, "nach", field_pos);
+                    ziehe(e[0], field_pos);
+                } else if (e.length == 2) {
                     //Das passende Ende muss gewählt werden
                     feld_gewaehlt = field_pos;
                 } else {
@@ -113,7 +117,7 @@ function canvasClicked(canvas, event) {
                 }
             } else { // Zug bei dem das Ende des gefärbten Bereihs nicht eindeutig ist
                 //prüfen ob ein Ende des gefärbten Bereichs gewählt wurde
-                if (pos_start_end.some(p => p[0]===field_pos[0] && p[1]===field_pos[1])) {
+                if (pos_start_end.some(p => p[0] === field_pos[0] && p[1] === field_pos[1])) {
                     // Es wurde ein gültiges Ende gewählt
                     ziehe(field_pos, feld_gewaehlt);
                 }
@@ -124,56 +128,57 @@ function canvasClicked(canvas, event) {
     } else {
         console.log("Nicht auf ein Feld geklickt");
     }
-    if (pos_rot.length+pos_schwarz.length == 2*cols+2*rows-4) {
+    if (pos_rot.length + pos_schwarz.length == 2 * cols + 2 * rows - 4) {
         //Spieler hat gewonnen
-        infoField.innerHTML = `Spieler ${amZug ? "schwarz" : "rot"} hat gewonnen!`;
-        console.log("Moves:",moves);
+        infoField.innerHTML = `Spieler ${amZug ? "Renate (schwarz)" : "Erhard (rot)"} hat gewonnen!`;
+        console.log("Moves:", moves);
     }
 }
 
 function ziehe(von, nach) { //von sollte immer das Ende des aktuell gefärbten Bereichs sein
     //Gültigkeitsprüfung
     //welches Ende wird geändert?
-    const index = pos_start_end.findIndex(p=> p[0]===von[0] && p[1]===von[1]);
+    const index = pos_start_end.findIndex(p => p[0] === von[0] && p[1] === von[1]);
     if (index == -1) {
         //ungültiger Zug - kein Ende des Bereichs
         return;
-    } 
+    }
     if (von[1] == nach[1]) {
         //Unterschied an vorderer Stelle (Zeilen?!)
-        if (von[1] != 0 && von[1] != rows-1) return;
+        if (von[1] != 0 && von[1] != rows - 1) return;
         del = 0
     } else {
         //Unterschied an hinterer Stelle (Spalten?!)
-        if (von[0] != 0 && von[0] != cols-1) return;
+        if (von[0] != 0 && von[0] != cols - 1) return;
         del = 1; //Stelle an der der Unterschied ist
     }
-    alteSituation = [pos_rot.map(p=>[...p]),pos_schwarz.map(p=>[...p]),pos_start_end.map(p=>[...p]),amZug]; 
+    alteSituation = [pos_rot.map(p => [...p]), pos_schwarz.map(p => [...p]), pos_start_end.map(p => [...p]), amZug];
     if (nach[del] > von[del]) {
         for (let i = nach[del]; i >= von[del]; i--) {
-            neu = [1,1]
-            neu[1-del]=nach[1-del]
+            neu = [1, 1]
+            neu[1 - del] = nach[1 - del]
             neu[del] = i
-            console.log("i",i,"neu",neu);
-            faerbe(neu,amZug);
+            console.log("i", i, "neu", neu);
+            faerbe(neu, amZug);
         }
     } else {
         for (let i = nach[del]; i <= von[del]; i++) {
-            neu = [1,1]
-            neu[1-del]=nach[1-del]
+            neu = [1, 1]
+            neu[1 - del] = nach[1 - del]
             neu[del] = i
-            faerbe(neu,amZug);
+            faerbe(neu, amZug);
         }
     }
     // Update des Spielstandes
-    amZug=1-amZug;
-    pos_start_end[index]=nach;
+    amZug = 1 - amZug;
+    showInfoAmZug();
+    pos_start_end[index] = nach;
     moves.push(alteSituation);
 }
 
 function faerbe(pos, spieler) {
     if (feldFrei(pos)) {
-        if (spieler==0) {
+        if (spieler == 0) {
             pos_schwarz.push(pos);
         } else {
             pos_rot.push(pos);
@@ -182,37 +187,37 @@ function faerbe(pos, spieler) {
 }
 
 function feldFrei(pos) {
-    const exists_s = pos_schwarz.some(p => pos[0] === p[0] && pos[1] === p[1] );
-    const exists_r = pos_rot.some(p => pos[0] === p[0] && pos[1] === p[1] );
+    const exists_s = pos_schwarz.some(p => pos[0] === p[0] && pos[1] === p[1]);
+    const exists_r = pos_rot.some(p => pos[0] === p[0] && pos[1] === p[1]);
     return !exists_r && !exists_s;
 }
 
 function findePassendesEnde(pos) {
     e = []
     if (pos_start_end.length < 2 || !feldFrei(pos)) return [];
-    if (istInEinerLinie(pos,pos_start_end[0])) {
+    if (istInEinerLinie(pos, pos_start_end[0])) {
         e.push(pos_start_end[0]);
     }
-    if (istInEinerLinie(pos,pos_start_end[1])) {
+    if (istInEinerLinie(pos, pos_start_end[1])) {
         e.push(pos_start_end[1]);
     }
     if (e.length < 2) return e;
-    if (istEcke(pos) && !istInEinerLinie(pos_start_end[0],pos_start_end[1])) return e;
+    if (istEcke(pos) && !istInEinerLinie(pos_start_end[0], pos_start_end[1])) return e;
     // beide Enden könnten in einer Reihe sein - das finden welches näher ist
     // E1...E2  pos
-    a1 = e[0][0]-pos[0]+e[0][1]-pos[1]
-    a2 = e[1][0]-pos[0]+e[1][1]-pos[1]
-    if (a1*a2 < 0) return e; //pos liegt zwischen beiden
-    if (Math.abs(a1)<Math.abs(a2)) return [e[0]]; // erstes Ende ist näher
+    a1 = e[0][0] - pos[0] + e[0][1] - pos[1]
+    a2 = e[1][0] - pos[0] + e[1][1] - pos[1]
+    if (a1 * a2 < 0) return e; //pos liegt zwischen beiden
+    if (Math.abs(a1) < Math.abs(a2)) return [e[0]]; // erstes Ende ist näher
     return [e[1]]; //zweites Ende ist näher
 }
 
 function istEcke(pos) {
-    return (pos[0]==0 || pos[0]==cols-1) && (pos[1]==0 || pos[1]==rows-1);  
+    return (pos[0] == 0 || pos[0] == cols - 1) && (pos[1] == 0 || pos[1] == rows - 1);
 }
 
 function istInEinerLinie(pos1, pos2) {
-    if ((pos1[0] == pos2[0] && (pos1[0]==0 || pos1[0] == cols-1))  || (pos1[1] == pos2[1] && (pos1[1]==0 || pos1[1] == rows-1))) {
+    if ((pos1[0] == pos2[0] && (pos1[0] == 0 || pos1[0] == cols - 1)) || (pos1[1] == pos2[1] && (pos1[1] == 0 || pos1[1] == rows - 1))) {
         return true;
     }
     return false;
