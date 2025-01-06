@@ -41,6 +41,7 @@ function reset() {
     feld_gewaehlt = null;
     field_width_px = canvas.width / cols;
     field_height_px = canvas.height / rows;
+    infoField.innerHTML="";
     draw();
 }
 
@@ -211,7 +212,7 @@ function istEcke(pos) {
 }
 
 function istInEinerLinie(pos1, pos2) {
-    if (pos1[0] == pos2[0] || pos1[1] == pos2[1]) {
+    if ((pos1[0] == pos2[0] && (pos1[0]==0 || pos1[0] == cols-1))  || (pos1[1] == pos2[1] && (pos1[1]==0 || pos1[1] == rows-1))) {
         return true;
     }
     return false;
