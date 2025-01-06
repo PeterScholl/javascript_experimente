@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bundeswettbewerb 2025</title>
+</head>
+
+<body>
+
+
+    <table>
+        <tr>
+            <td width="480">
+                <canvas id="canvas" style="border: none;" width="480" height="480"
+                    style="vertical-align: middle;"></canvas>
+            </td>
+            <td>
+                <div class="controls">
+
+                    <h2>Einstellungen</h2>
+
+                    <label for="input_rows">Zeilen (m): </label>
+                    <input type="number" value="4" id="input_rows" size="3" name="input_rows" onchange="reset()">
+                    <br>
+                    <label for="input_cols">Spalten (n): </label>
+                    <input type="number" value="7" id="input_cols" size="3" name="input_cols" onchange="reset()">
+                    <br>
+                    <button onclick="reset()">Reset</button>
+
+                    <p id="info"></p>
+
+
+
+                </div>
+
+            </td>
+        </tr>
+
+
+
+    </table>
+    <p>
+        Auf einem solchen m x n-Rechteckrahmen spielen Renate und Erhard nach
+        folgenden Regeln, wobei Renate beginnt:
+        Wer am Zug ist, färbt eine rechteckige Fläche, die aus einem einzelnen
+        weißen Quadrat oder mehreren weißen Quadraten besteht; gibt es danach
+        noch weiße Quadrate, so müssen diese weiterhin eine zusammenhängende
+        Fläche bilden.
+        Wer den letzten Zug macht, hat gewonnen.
+        Bestimme alle Paare (m,n), für die Renate eine Gewinnstrategie hat.
+    </p>
+    <div class="footer">
+        <hr>
+        <small>Stand 06.01.25 - Quelltext auf <a
+                href="https://github.com/PeterScholl/javascript_experimente">GitHub</a></small>
+    </div>
+    <script src="./js/bwm_2025_3.js"></script>
+</body>
+
+</html>
