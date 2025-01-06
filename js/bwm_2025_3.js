@@ -57,16 +57,9 @@ function keyDown(e) {
     }
     if (e.key == 'z') { // Zug zurück
         if (moves.length > 0) {
-            console.log(moves.length);
-            [von, nach] = moves.pop();
-            //console.log(moves.length);
-            if (amZug == 0) { //Schwarz ist am Zug - Rücknahme von Rot
-                //bewege(pos_rot,nach,von);
-            } else {
-                //bewege(pos_schwarz,nach,von);
-            }
-            //moves.pop(); //der neue "Zug" muss wieder runter
-            amZug=1-amZug; //Spieler wechseln
+            console.log("Moves Length",moves.length);
+            [pos_rot,pos_schwarz,pos_start_end,amZug] = moves.pop();
+            if (pos_rot.length+pos_schwarz.length==0) pos_start_end=[];
             feld_gewaehlt=null;
             draw();
         }
@@ -154,7 +147,7 @@ function ziehe(von, nach) { //von sollte immer das Ende des aktuell gefärbten B
         if (von[0] != 0 && von[0] != cols-1) return;
         del = 1; //Stelle an der der Unterschied ist
     }
-
+    alteSituation = [pos_rot.map(p=>[...p]),pos_schwarz.map(p=>[...p]),pos_start_end.map(p=>[...p]),amZug]; 
     if (nach[del] > von[del]) {
         for (let i = nach[del]; i >= von[del]; i--) {
             neu = [1,1]
@@ -174,8 +167,7 @@ function ziehe(von, nach) { //von sollte immer das Ende des aktuell gefärbten B
     // Update des Spielstandes
     amZug=1-amZug;
     pos_start_end[index]=nach;
-    moves.push([von,nach]);
-
+    moves.push(alteSituation);
 }
 
 function faerbe(pos, spieler) {
@@ -203,7 +195,8 @@ function findePassendesEnde(pos) {
     if (istInEinerLinie(pos,pos_start_end[1])) {
         e.push(pos_start_end[1]);
     }
-    if (e.length < 2 || !istInEinerLinie(pos_start_end[0],pos_start_end[1])) return e;
+    if (e.length < 2) return e;
+    if (istEcke(pos) && !istInEinerLinie(pos_start_end[0],pos_start_end[1])) return e;
     // beide Enden könnten in einer Reihe sein - das finden welches näher ist
     // E1...E2  pos
     a1 = e[0][0]-pos[0]+e[0][1]-pos[1]
@@ -211,6 +204,10 @@ function findePassendesEnde(pos) {
     if (a1*a2 < 0) return e; //pos liegt zwischen beiden
     if (Math.abs(a1)<Math.abs(a2)) return [e[0]]; // erstes Ende ist näher
     return [e[1]]; //zweites Ende ist näher
+}
+
+function istEcke(pos) {
+    return (pos[0]==0 || pos[0]==cols-1) && (pos[1]==0 || pos[1]==rows-1);  
 }
 
 function istInEinerLinie(pos1, pos2) {
