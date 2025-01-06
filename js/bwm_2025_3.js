@@ -112,6 +112,7 @@ function canvasClicked(canvas, event) {
             if (pos_start_end.length == 0) { // erster Zug
                 console.log("Erster Zug");
                 if (istInEinerLinie(field_pos, feld_gewaehlt)) {
+                    console.log("In einer Linie");
                     pos_start_end = [field_pos, field_pos]; //muss zuerst setzen, damit Zug gültigkeit hat
                     ziehe(field_pos, feld_gewaehlt);
                 }
@@ -140,19 +141,22 @@ function ziehe(von, nach) { //von sollte immer das Ende des aktuell gefärbten B
     //Gültigkeitsprüfung
     //welches Ende wird geändert?
     const index = pos_start_end.findIndex(p => p[0] === von[0] && p[1] === von[1]);
+    //console.log("Index:",index);
     if (index == -1) {
         //ungültiger Zug - kein Ende des Bereichs
+        //console.log("ungültiger Zug - Index = -1", index);
         return;
     }
     if (von[1] == nach[1]) {
-        //Unterschied an vorderer Stelle (Zeilen?!)
-        if (von[1] != 0 && von[1] != rows - 1) return;
+        //Unterschied an vorderer Stelle (Zeilen?!) - oder absolut identisches Feld
+        if ((von[0]!=nach[0]) && von[1] != 0 && von[1] != rows - 1) return;
         del = 0
     } else {
         //Unterschied an hinterer Stelle (Spalten?!)
         if (von[0] != 0 && von[0] != cols - 1) return;
         del = 1; //Stelle an der der Unterschied ist
     }
+    //console.log("Delta (del):",del);
     alteSituation = [pos_rot.map(p => [...p]), pos_schwarz.map(p => [...p]), pos_start_end.map(p => [...p]), amZug];
     if (nach[del] > von[del]) {
         for (let i = nach[del]; i >= von[del]; i--) {
