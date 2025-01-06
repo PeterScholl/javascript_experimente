@@ -128,6 +128,7 @@ function canvasClicked(canvas, event) {
     } else {
         console.log("Nicht auf ein Feld geklickt");
     }
+    showInfoAmZug();
     if (pos_rot.length + pos_schwarz.length == 2 * cols + 2 * rows - 4) {
         //Spieler hat gewonnen
         infoField.innerHTML = `Spieler ${amZug ? "Renate (schwarz)" : "Erhard (rot)"} hat gewonnen!`;
@@ -281,7 +282,7 @@ function draw_rect_onField(x, y, border = 0) {
 }
 
 function istGueltig(x, y) {
-    return x >= 0 && x < cols && y >= 0 && y < cols;
+    return x >= 0 && x < cols && y >= 0 && y < rows;
 }
 
 function gameLoop() { }
