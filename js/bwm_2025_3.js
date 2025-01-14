@@ -199,6 +199,7 @@ function feldFrei(pos) {
 
 function findePassendesEnde(pos) {
     e = []
+    // ist überhaupt eine Ermittlung eines Anschlussendes möglich
     if (pos_start_end.length < 2 || !feldFrei(pos)) return [];
     if (istInEinerLinie(pos, pos_start_end[0])) {
         e.push(pos_start_end[0]);
@@ -219,6 +220,48 @@ function findePassendesEnde(pos) {
 
 function istEcke(pos) {
     return (pos[0] == 0 || pos[0] == cols - 1) && (pos[1] == 0 || pos[1] == rows - 1);
+}
+
+function erstefreieFelder(){
+    //Berechnet die ersten felder auf die etwas gesetzt werden kann
+    //wenn nur noch ein Feld frei ist, wird dies zweimal zurückgegeben
+    if (pos_start_end.length < 2) return [];
+    if (istGleich(pos_start_end[0],pos_start_end[1])) return berechneNachbarfelder(pos_start_end[0]);
+    n1 = berechneNachbarfelder(pos_start_end[0]);
+    n2 = berechneNachbarfelder(pos_start_end[1]);
+    n1 = n1.filter(feldFrei);
+    n2 = n2.filter(feldFrei);
+    result = n1.concat(n2);
+    if (result.length != 2) console.error("Fehler bei erstefreie Felder - Anzahl stimmt nicht");
+    return result;
+}
+
+function istGleich(pos1,pos2) {
+    return pos1[0] == pos2[0] || pos1[1] == pos2[1];
+}
+function berechneNachbarfelder(pos) {
+    //berechnet die beiden Nachbarfelder zur Position
+    if (istEcke(pos)) {
+        if (pos[0] == 0) { //linke Kante
+            if (pos[1] == 0) { //oben
+                return [[0,1],[1,0]];
+            } else {
+                return [[1,pos[1]],[0,pos[1]-1]];
+            }
+        } else { //rechte Kante
+            if (pos[1] == 0) { //oben
+                return [[pos[0],1],[pos[0]-1,0]];
+            } else {
+                return [[pos[0]-1,pos[1]],[pos[0],pos[1]-1]];
+            }    
+        }
+    } else { //ist keine Ecke
+        if (pos[0] == 0 || pos[0] == cols-1) { //linke oder rechte Kante
+            return [[pos[0],pos[1]-1],[pos[0],pos[1]+1]];
+        } else { // obere oder untere Kante
+            return [[pos[0]-1,pos[1]], [pos[0]+1,pos[1]]];
+        }
+    }
 }
 
 function istInEinerLinie(pos1, pos2) {
