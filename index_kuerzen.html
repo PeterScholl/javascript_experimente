@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bruch Kürzen Spiel</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+
+        canvas {
+            border: 1px solid black;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Bruch Kürzen Spiel</h1>
+    <canvas id="gameCanvas" width="600" height="300"></canvas>
+    <div>
+        <label for="factorInput">Teiler eingeben:</label>
+        <input type="number" id="factorInput" min="1">
+        <button id="reduceBtn">Kürzen</button>
+    </div>
+
+    <script src="js/kuerzen.js"></script>
+</body>
+
+</html>
