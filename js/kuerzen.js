@@ -29,6 +29,10 @@ let selected = { num: null, den: null };
 // Globale Variablen zur Speicherung der berechneten Werte
 let maxFactors, boxWidth, boxHeight, totalWidth, startX;
 
+let successCount = 0;
+let errorCount = 0;
+let timeElapsed = 0;
+
 // Schriftgröße anpassen
 const increaseFontBtn = document.querySelector('#increaseFontBtn');
 const decreaseFontBtn = document.querySelector('#decreaseFontBtn');
@@ -44,6 +48,29 @@ decreaseFontBtn.addEventListener('click', () => {
     updatePositions();
     drawFraction();
 });
+
+// Timer starten
+function startTimer() {
+    setInterval(() => {
+        timeElapsed += 0.1;
+        document.getElementById('timer').textContent = `${timeElapsed.toFixed(1)} s`;
+    }, 100);
+}
+
+// Erhöht den Zähler
+function updateStats(isSuccess) {
+    if (isSuccess) {
+        successCount++;
+        showToast("Erfolg!", "green");
+    } else {
+        errorCount++;
+        showToast("Fehler!", "red");
+    }
+
+    document.getElementById('successCount').textContent = successCount;
+    document.getElementById('errorCount').textContent = errorCount;
+}
+
 
 // Tastatursteuerung
 document.addEventListener('keydown', (e) => {
@@ -265,9 +292,14 @@ function reduceFraction(factor) {
             denominator[selected.den].value /= factor;
             numerator = removeOnes(numerator);
             denominator = removeOnes(denominator);
+            if (isFullyReduced(numerator, denominator)) {
+                updateStats(true);
+                newTask();
+            }
             updatePositions();
         } else {
             alert('Ungültige Kürzung!');
+            updateStats(false);
         }
         selected = { num: null, den: null };
         drawFraction();
@@ -396,6 +428,24 @@ function isFullyReduced(numerator, denominator) {
     const numProduct = numerator.reduce((prod, item) => prod * item.value, 1);
     const denProduct = denominator.reduce((prod, item) => prod * item.value, 1);
     return gcd(numProduct, denProduct) === 1;
+}
+
+// Funktion zur Anzeige der Meldung
+function showToast(message, color) {
+    const toast = document.createElement('div');
+    toast.textContent = message;
+    toast.style.background = color;
+    toast.style.color = 'white';
+    toast.style.padding = '10px 20px';
+    toast.style.margin = '5px';
+    toast.style.borderRadius = '10px';
+    toast.style.opacity = '0.9';
+    document.getElementById('toast-container').appendChild(toast);
+
+    // Entferne die Meldung nach 1,5 Sekunden
+    setTimeout(() => {
+        toast.remove();
+    }, 1500);
 }
 
 document.getElementById('newTaskBtn').addEventListener('click', newTask);

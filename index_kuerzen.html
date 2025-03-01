@@ -20,6 +20,13 @@
 
 <body>
     <h1>Bruch Kürzen Spiel</h1>
+    <div id="stats" style="position: absolute; top: 10px; left: 10px;">
+        <span id="successCount" style="color: green;">0</span> : <span id="errorCount" style="color: red;">0</span>
+    </div>
+    <div id="timer" style="position: absolute; top: 10px; right: 10px;">
+        0.0 s
+    </div>
+
     <canvas id="gameCanvas" width="600" height="300"></canvas>
     <div>
         <label for="factorInput">Teiler eingeben:</label>
@@ -30,7 +37,10 @@
         <button id="decreaseFontBtn">-</button>
     </div>
 
+    <div id="toast-container" style="position: absolute; top: 50px; right: 10px; z-index: 1000;"></div>
+
     <script src="js/kuerzen.js"></script>
+
 </body>
 
 </html>
