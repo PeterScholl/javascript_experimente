@@ -1,3 +1,8 @@
+//TODO
+// 1.) Aufgaben ERstellng mit verschiedenen Schwierigkeitsgeraden
+// Primfaktoren min max, anz primzahlen, gleiche Primfaktoren in Zähler und Nenner, Anz Faktoren
+// 2.) Timer für 5-10 Aufgaben
+
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
@@ -69,6 +74,11 @@ function newTask() {
         { value: 128, x: 0, y: 0 },
         { value: 72, x: 0, y: 0 }
     ];
+
+    const fraction = generateRandomFraction(20, 8, 8, 3, 2);
+    console.log("Random values:", fraction.numerator, fraction.denominator);
+    numerator = fraction.numerator;
+    denominator = fraction.denominator;
 
     // Werte berechnen und in globale Variablen speichern
     maxFactors = Math.max(numerator.length, denominator.length);
@@ -265,13 +275,8 @@ function reduceFraction(factor) {
 }
 
 function removeOnes(list) {
-    const originalLength = list.length;
+    if (list.length <= 1) return list;
     list = list.filter(item => item.value !== 1);
-
-    // Falls sich etwas geändert hat, Positionen aktualisieren
-    if (list.length !== originalLength) {
-        console.log("Eine 1 wurde herausgenommen", JSON.stringify(list));
-    }
     return list;
 }
 
@@ -316,13 +321,82 @@ canvas.addEventListener('click', (e) => {
 
     // Dialog öffnen, wenn Zähler und Nenner ausgewählt sind
     if (selected.num !== null && selected.den !== null) {
-        openInputDialog();
+        console.log(numerator[selected.num], denominator[selected.den]);
+        if (numerator[selected.num].value === denominator[selected.den].value) {
+            reduceFraction(numerator[selected.num].value);
+        } else {
+            openInputDialog();
+        }
     }
 
     drawFraction();
 });
 
+function generateRandomFraction(maxPrime, numFactorsNum, numFactorsDen, commonFactors, groupSize) {
+    const primes = getPrimesUpTo(maxPrime);
 
+    // Zufällige Primfaktoren auswählen
+    const common = getRandomElements(primes, commonFactors);
+    const uniqueNum = getRandomElements(primes, numFactorsNum - commonFactors);
+    const uniqueDen = getRandomElements(primes, numFactorsDen - commonFactors);
+
+    // Zähler und Nenner zusammenstellen
+    const numeratorFactors = shuffle([...common, ...uniqueNum]);
+    const denominatorFactors = shuffle([...common, ...uniqueDen]);
+
+    // In Gruppen zusammenfassen
+    const numerator = groupFactors(numeratorFactors, groupSize);
+    const denominator = groupFactors(denominatorFactors, groupSize);
+
+    return { numerator, denominator };
+}
+
+// Hilfsfunktion: Erzeugt eine Liste aller Primzahlen bis max
+function getPrimesUpTo(max) {
+    const sieve = Array(max + 1).fill(true);
+    sieve[0] = sieve[1] = false;
+    for (let i = 2; i * i <= max; i++) {
+        if (sieve[i]) {
+            for (let j = i * i; j <= max; j += i) {
+                sieve[j] = false;
+            }
+        }
+    }
+    return sieve.reduce((primes, isPrime, num) => isPrime ? primes.concat(num) : primes, []);
+}
+
+// Hilfsfunktion: Wählt zufällig n Elemente aus einem Array aus
+function getRandomElements(arr, n) {
+    const shuffled = [...arr].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, n);
+}
+
+// Hilfsfunktion: Mischt ein Array zufällig
+function shuffle(arr) {
+    return arr.sort(() => Math.random() - 0.5);
+}
+
+// Hilfsfunktion: Gruppiert Faktoren in Produkte
+function groupFactors(factors, groupSize) {
+    const groups = [];
+    for (let i = 0; i < factors.length; i += groupSize) {
+        const chunk = factors.slice(i, i + groupSize);
+        groups.push({ value: chunk.reduce((a, b) => a * b, 1) });
+    }
+    return groups;
+}
+
+// Berechnet den größten gemeinsamen Teiler (ggT) mit dem euklidischen Algorithmus
+function gcd(a, b) {
+    return b === 0 ? a : gcd(b, a % b);
+}
+
+// Prüft, ob der Bruch vollständig gekürzt ist
+function isFullyReduced(numerator, denominator) {
+    const numProduct = numerator.reduce((prod, item) => prod * item.value, 1);
+    const denProduct = denominator.reduce((prod, item) => prod * item.value, 1);
+    return gcd(numProduct, denProduct) === 1;
+}
 
 document.getElementById('newTaskBtn').addEventListener('click', newTask);
 
