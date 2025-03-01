@@ -124,25 +124,39 @@ function updatePositions() {
     boxHeight = fontSize * 1.5; // Dynamische Box-Höhe
     const offsetY = fontSize; // Vertikaler Abstand von der Mitte
 
-    // Dynamische Werte basierend auf den aktuellen Faktoren berechnen
-    const maxFactors = Math.max(numerator.length, denominator.length);
+    // Dynamische Breite pro Faktor
     boxWidth = Math.max(getMaxWidth(numerator), getMaxWidth(denominator)) + 20;
-    const totalWidth = maxFactors * boxWidth;
-    const startX = (canvas.width - totalWidth) / 2;
+
+    // Breite der gesamten Darstellung berechnen
+    const totalNumWidth = numerator.length * boxWidth + (numerator.length - 1) * spacing;
+    const totalDenWidth = denominator.length * boxWidth + (denominator.length - 1) * spacing;
+
+    // Berechnung der Mitte des Canvas
+    const centerX = canvas.offsetWidth / 2;
+
+    // Zentrierte Startposition für Zähler und Nenner
+    let numStartX = centerX - totalNumWidth / 2;
+    let denStartX = centerX - totalDenWidth / 2;
+
+    // Dynamische Werte basierend auf den aktuellen Faktoren berechnen
+    //const maxFactors = Math.max(numerator.length, denominator.length);
+    //boxWidth = Math.max(getMaxWidth(numerator), getMaxWidth(denominator)) + 20;
+    //const totalWidth = maxFactors * boxWidth;
+    //const startX = (canvas.width - totalWidth) / 2;
 
     // Zentrierte Startpositionen für Zähler und Nenner
-    let numStartX = startX + (maxFactors - numerator.length) * boxWidth / 2 - (numerator.length - 1) * spacing / 2;
-    let denStartX = startX + (maxFactors - denominator.length) * boxWidth / 2 - (denominator.length - 1) * spacing / 2;
+    //let numStartX = startX + (maxFactors - numerator.length) * boxWidth / 2 - (numerator.length - 1) * spacing / 2;
+    //let denStartX = startX + (maxFactors - denominator.length) * boxWidth / 2 - (denominator.length - 1) * spacing / 2;
 
 
     numerator.forEach((item, i) => {
         item.x = numStartX + i * (boxWidth + spacing);
-        item.y = canvas.height / 2 - offsetY - boxHeight / 2;
+        item.y = canvas.offsetHeight / 2 - offsetY - boxHeight / 2;
     });
 
     denominator.forEach((item, i) => {
         item.x = denStartX + i * (boxWidth + spacing);
-        item.y = canvas.height / 2 + offsetY / 2;
+        item.y = canvas.offsetHeight / 2 + offsetY / 2;
     });
 
     console.log("Numerator", numerator);
@@ -153,7 +167,7 @@ function drawFraction() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Bruchstrich zeichnen
-    const lineY = canvas.height / 2;
+    const lineY = canvas.offsetHeight / 2;
 
     // Berechne die maximale Anzahl an Spacings (Abstände zwischen den Boxen)
     const maxSpacingCount = Math.max(numerator.length, denominator.length) - 1;
@@ -165,7 +179,7 @@ function drawFraction() {
         denominator.length * boxWidth + totalSpacing
     );
 
-    const lineStartX = (canvas.width - maxWidth) / 2;
+    const lineStartX = (canvas.offsetWidth - maxWidth) / 2;
     ctx.strokeStyle = 'black';
     ctx.lineWidth = 2;
     ctx.beginPath();
@@ -298,7 +312,7 @@ function reduceFraction(factor) {
             }
             updatePositions();
         } else {
-            alert('Ungültige Kürzung!');
+            //alert('Ungültige Kürzung!');
             updateStats(false);
         }
         selected = { num: null, den: null };
@@ -322,9 +336,7 @@ function getMaxWidth(numbers) {
     }, 0);
 }
 
-
-canvas.addEventListener('click', (e) => {
-    const { offsetX, offsetY } = e;
+function handleClick(offsetX,offsetY) {
 
     // Prüfe Zähler
     numerator.forEach((num, i) => {
@@ -362,6 +374,11 @@ canvas.addEventListener('click', (e) => {
     }
 
     drawFraction();
+}
+
+canvas.addEventListener('click', (e) => {
+    const { offsetX, offsetY } = e;
+    handleClick(offsetX, offsetY);
 });
 
 function generateRandomFraction(maxPrime, numFactorsNum, numFactorsDen, commonFactors, groupSize) {
@@ -447,6 +464,35 @@ function showToast(message, color) {
         toast.remove();
     }, 1500);
 }
+
+function resizeCanvas() {
+    //canvas.width = window.innerWidth * 0.9;
+    //canvas.height = window.innerHeight * 0.7;
+    const ratio = window.devicePixelRatio || 1;
+    // Anpassbare Höhe (z. B. 70% der Viewport-Höhe)
+    const maxHeight = Math.min(window.innerHeight * 0.5, 600);
+    console.log("Resize ratio:", ratio);
+
+    // Setze die tatsächliche Zeichenfläche
+    canvas.width = canvas.offsetWidth * ratio;
+    canvas.height = maxHeight * ratio;
+
+    // Skaliere den Kontext, um die Qualität zu behalten
+    const ctx = canvas.getContext('2d');
+    ctx.scale(ratio,ratio);
+
+    updatePositions();
+    drawFraction(); // Neuzeichnen nach Resize
+}
+
+// Touch-Events für Auswahl
+canvas.addEventListener('touchstart', (e) => {
+    const touch = e.touches[0];
+    handleClick(touch.clientX, touch.clientY);
+});
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas(); // Initiale Anpassung
 
 document.getElementById('newTaskBtn').addEventListener('click', newTask);
 

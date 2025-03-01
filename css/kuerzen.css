@@ -1,0 +1,67 @@
+/* Flexibles Layout */
+body {
+    box-sizing: border-box;    /* Verhindert Überlaufen durch Padding */
+    overflow-x: hidden;    /* Verhindert horizontales Scrollen */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    font-family: sans-serif;
+    overflow: hidden;    /* Verhindert Scrollen */
+}
+
+/* Canvas passt sich dem Bildschirm an */
+canvas {
+    display: block;          /* Entfernt Lücken unter dem Canvas */
+    width: 90vw;             /* Breite: 90% der Viewport-Breite */
+    max-height: 80vh;        /* Höhe auf 50% der Viewport-Höhe begrenzen */
+    margin: 0 auto;          /* Zentrierung */
+}
+
+/* Überschrift korrekt positionieren */
+h1 {
+    margin: 0;
+    /* Entfernt den äußeren Abstand */
+    padding: 1vh 0;
+    /* Etwas inneren Abstand für Lesbarkeit */
+    text-align: center;
+    /* Optional: Zentriert die Überschrift */
+}
+
+/* Responsive Buttons */
+button,
+label,
+input {
+    padding: 1vh 2vw;
+    font-size: max(1em, 3vw);
+}
+
+/* Toast-Nachrichten */
+#toast-container {
+    position: absolute;
+    top: 5vh;
+    right: 5vw;
+}
+
+/* Container für Stats und Timer */
+#info-container {
+    display: flex;
+    justify-content: space-between;
+    margin: 1vh 5vw;
+    width: 90vw;
+    /* Breite über den gesamten Bildschirm */
+}
+
+
+/* Statistiken (links) */
+#stats {
+    font-size: max(1em, 3vw);
+}
+
+/* Timer (rechts) */
+#timer {
+    font-size: max(1em, 3vw);
+}
