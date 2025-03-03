@@ -252,28 +252,53 @@ function openInputDialog() {
     overlay.style.display = 'flex';
     overlay.style.justifyContent = 'center';
     overlay.style.alignItems = 'flex-start';
-    overlay.style.paddingTop = '20vh';
+    overlay.style.paddingTop = '5vh';
     overlay.style.zIndex = '1000'; // Über allem
 
     // Dialog erstellen
     const dialog = document.createElement('div');
+    const factorText = `Gemeinsamer Teiler von<br>${numerator[selected["num"]].value} und ${denominator[selected["den"]].value}:`;
     dialog.innerHTML = `
-      <label for="factorInput">Teiler eingeben:</label>
-      <input type="number" id="factorInput" min="1">
-      <button id="confirmBtn">Bestätigen</button>
-    `;
+        <p>${factorText}</p>
+        <input type="number" id="factorInput" min="1" inputmode="none">
+        <div id="numPad">
+            <div>${[1, 2, 3].map(n => `<button>${n}</button>`).join('')}</div>
+            <div>${[4, 5, 6].map(n => `<button>${n}</button>`).join('')}</div>
+            <div>${[7, 8, 9].map(n => `<button>${n}</button>`).join('')}</div>
+            <div><button id="del">⌫</button><button>0</button><button id="enter">↵</button></div>
+        </div>
+        `;
     dialog.style.background = 'white';
     dialog.style.padding = '20px';
     dialog.style.border = '1px solid black';
     dialog.style.borderRadius = '10px';
     dialog.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.3)';
+
     overlay.appendChild(dialog);
 
     // Overlay zum DOM hinzufügen
     document.body.appendChild(overlay);
 
-    // Input-Feld fokussieren
+
+    // Tastatur-Funktionalität
     const input = dialog.querySelector('#factorInput');
+    const numPad = dialog.querySelector('#numPad');
+
+    numPad.addEventListener('click', (e) => {
+        if (e.target.tagName === 'BUTTON') {
+            if (e.target.id === 'del') {
+                input.value = input.value.slice(0, -1);
+            } else if (e.target.id === 'enter') {
+                closeAndProcess();
+            } else {
+                input.value += e.target.textContent;
+            }
+        }
+    });
+
+
+
+    // Input-Feld fokussieren
     input.focus();
 
     // Bestätigungsfunktion
@@ -285,8 +310,7 @@ function openInputDialog() {
         }
     }
 
-    // Event-Listener für Button und Enter-Taste
-    dialog.querySelector('#confirmBtn').addEventListener('click', closeAndProcess);
+    // Event-Listener für Enter-Taste
     input.addEventListener('keydown', (e) => {
         if (e.key === 'Enter') closeAndProcess();
     });
@@ -336,7 +360,7 @@ function getMaxWidth(numbers) {
     }, 0);
 }
 
-function handleClick(offsetX,offsetY) {
+function handleClick(offsetX, offsetY) {
 
     // Prüfe Zähler
     numerator.forEach((num, i) => {
@@ -479,7 +503,7 @@ function resizeCanvas() {
 
     // Skaliere den Kontext, um die Qualität zu behalten
     const ctx = canvas.getContext('2d');
-    ctx.scale(ratio,ratio);
+    ctx.scale(ratio, ratio);
 
     updatePositions();
     drawFraction(); // Neuzeichnen nach Resize

@@ -1,7 +1,9 @@
 /* Flexibles Layout */
 body {
-    box-sizing: border-box;    /* Verhindert Überlaufen durch Padding */
-    overflow-x: hidden;    /* Verhindert horizontales Scrollen */
+    box-sizing: border-box;
+    /* Verhindert Überlaufen durch Padding */
+    overflow-x: hidden;
+    /* Verhindert horizontales Scrollen */
     margin: 0;
     padding: 0;
     display: flex;
@@ -10,15 +12,20 @@ body {
     justify-content: center;
     height: 100vh;
     font-family: sans-serif;
-    overflow: hidden;    /* Verhindert Scrollen */
+    overflow: hidden;
+    /* Verhindert Scrollen */
 }
 
 /* Canvas passt sich dem Bildschirm an */
 canvas {
-    display: block;          /* Entfernt Lücken unter dem Canvas */
-    width: 90vw;             /* Breite: 90% der Viewport-Breite */
-    max-height: 80vh;        /* Höhe auf 50% der Viewport-Höhe begrenzen */
-    margin: 0 auto;          /* Zentrierung */
+    display: block;
+    /* Entfernt Lücken unter dem Canvas */
+    width: 90vw;
+    /* Breite: 90% der Viewport-Breite */
+    max-height: 80vh;
+    /* Höhe auf 50% der Viewport-Höhe begrenzen */
+    margin: 0 auto;
+    /* Zentrierung */
 }
 
 /* Überschrift korrekt positionieren */
@@ -36,7 +43,7 @@ button,
 label,
 input {
     padding: 1vh 2vw;
-    font-size: max(1em, 3vw);
+    font-size: max(1em, 2vw);
 }
 
 /* Toast-Nachrichten */
@@ -55,6 +62,16 @@ input {
     /* Breite über den gesamten Bildschirm */
 }
 
+/* NumPad-Buttons */
+#numPad button {
+    width: 3em;
+    /* Einheitliche Breite */
+    height: 3em;
+    /* Einheitliche Höhe */
+    text-align: center;
+    line-height: 3em;
+    /* Vertikale Zentrierung */
+}
 
 /* Statistiken (links) */
 #stats {
@@ -64,4 +81,17 @@ input {
 /* Timer (rechts) */
 #timer {
     font-size: max(1em, 3vw);
+}
+
+/* Einstellungspfeile für Faktoreingabe entfernen */
+#factorInput {
+    -moz-appearance: textfield; /* Für Firefox */
+    appearance: textfield; /* Standard */
+    text-align: center; /* Zentriert die Eingabe */
+}
+
+#factorInput::-webkit-outer-spin-button,
+#factorInput::-webkit-inner-spin-button {
+    -webkit-appearance: none; /* Für Chrome, Safari, Edge */
+    margin: 0; 
 }
