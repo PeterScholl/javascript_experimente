@@ -32,6 +32,9 @@ let maxFactors, boxWidth, boxHeight, totalWidth, startX;
 let successCount = 0;
 let errorCount = 0;
 let timeElapsed = 0;
+let timerRunning = false; // Überwacht den Timer-Status
+let timerID = null; //ID für den Timer zum Stoppen
+
 
 // Schriftgröße anpassen
 const increaseFontBtn = document.querySelector('#increaseFontBtn');
@@ -51,7 +54,7 @@ decreaseFontBtn.addEventListener('click', () => {
 
 // Timer starten
 function startTimer() {
-    setInterval(() => {
+    timerID = setInterval(() => {
         timeElapsed += 0.1;
         document.getElementById('timer').textContent = `${timeElapsed.toFixed(1)} s`;
     }, 100);
@@ -62,6 +65,9 @@ function updateStats(isSuccess) {
     if (isSuccess) {
         successCount++;
         showToast("Erfolg!", "green");
+        if (successCount === 5 && timerID) {
+            clearInterval(timerID); // Timer stoppen
+        }
     } else {
         errorCount++;
         showToast("Fehler!", "red");
@@ -361,7 +367,12 @@ function getMaxWidth(numbers) {
 }
 
 function handleClick(offsetX, offsetY) {
-
+    if (!timerRunning) {
+        console.log("Starte Timer");
+        timerRunning = true;
+        startTimer(); // Timer starten
+    }
+    
     // Prüfe Zähler
     numerator.forEach((num, i) => {
         if (
