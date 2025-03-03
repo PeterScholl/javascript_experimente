@@ -292,11 +292,11 @@ function openInputDialog() {
     });
 
     // Schließen bei Klick außerhalb des Dialogs
-    overlay.addEventListener('click', (e) => {
-        if (e.target === overlay) {
-            document.body.removeChild(overlay);
-        }
-    });
+    // overlay.addEventListener('click', (e) => {
+    //     if (e.target === overlay) {
+    //         document.body.removeChild(overlay);
+    //     }
+    // });
 }
 
 function reduceFraction(factor) {
