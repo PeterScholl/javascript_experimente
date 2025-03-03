@@ -289,7 +289,13 @@ function openInputDialog() {
     // Tastatur-Funktionalität
     const input = dialog.querySelector('#factorInput');
     const numPad = dialog.querySelector('#numPad');
+    // Prüfen, ob das Gerät mobil ist
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
 
+    // Nur auf Mobilgeräten readonly setzen
+    if (isMobile) {
+        input.setAttribute('readonly', true);
+    }
     numPad.addEventListener('click', (e) => {
         if (e.target.tagName === 'BUTTON') {
             if (e.target.id === 'del') {
