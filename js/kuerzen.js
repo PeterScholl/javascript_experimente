@@ -108,7 +108,7 @@ function newTask() {
         { value: 72, x: 0, y: 0 }
     ];
 
-    const fraction = generateRandomFraction(20, 8, 8, 3, 2);
+    const fraction = generateRandomFraction(11, 8, 8, 3, 2);
     console.log("Random values:", fraction.numerator, fraction.denominator);
     numerator = fraction.numerator;
     denominator = fraction.denominator;
