@@ -115,6 +115,7 @@ function canvasClicked(canvas, event) {
                     console.log("In einer Linie");
                     pos_start_end = [field_pos, field_pos]; //muss zuerst setzen, damit Zug gültigkeit hat
                     ziehe(field_pos, feld_gewaehlt);
+                    pos_start_end = erstefreieFelder();
                 }
             } else { // Zug bei dem das Ende des gefärbten Bereihs nicht eindeutig ist
                 //prüfen ob ein Ende des gefärbten Bereichs gewählt wurde
@@ -137,7 +138,7 @@ function canvasClicked(canvas, event) {
     }
 }
 
-function ziehe(von, nach) { //von sollte immer das Ende des aktuell gefärbten Bereichs sein
+function ziehe(von, nach) { //von sollte immer das freie Feld am Ende des aktuell gefärbten Bereichs sein
     //Gültigkeitsprüfung
     //welches Ende wird geändert?
     const index = pos_start_end.findIndex(p => p[0] === von[0] && p[1] === von[1]);
@@ -177,7 +178,7 @@ function ziehe(von, nach) { //von sollte immer das Ende des aktuell gefärbten B
     // Update des Spielstandes
     amZug = 1 - amZug;
     showInfoAmZug();
-    pos_start_end[index] = nach;
+    pos_start_end[index] = berechneNachbarfelder(nach).filter(feldFrei)[0];
     moves.push(alteSituation);
 }
 
