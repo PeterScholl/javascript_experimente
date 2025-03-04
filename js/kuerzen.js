@@ -92,6 +92,19 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
+/* Startet den Timer neu und setzt den Spielstand zurück */
+function newGame() {
+    successCount = 0;
+    errorCount = 0;
+    clearInterval(timerID); // Timer stoppen
+    timeElapsed = 0;
+    timerRunning = false; // Überwacht den Timer-Status
+    newTask();
+    drawFraction();
+    document.getElementById('timer').textContent = `${timeElapsed.toFixed(1)} s`;
+    document.getElementById('successCount').textContent = successCount;
+    document.getElementById('errorCount').textContent = errorCount;
+}
 
 function newTask() {
     // Beispielaufgabe
@@ -108,7 +121,7 @@ function newTask() {
         { value: 72, x: 0, y: 0 }
     ];
 
-    const fraction = generateRandomFraction(20, 8, 8, 3, 2);
+    const fraction = generateRandomFraction(11, 8, 8, 6, 2);
     console.log("Random values:", fraction.numerator, fraction.denominator);
     numerator = fraction.numerator;
     denominator = fraction.denominator;
@@ -424,11 +437,13 @@ canvas.addEventListener('click', (e) => {
 
 function generateRandomFraction(maxPrime, numFactorsNum, numFactorsDen, commonFactors, groupSize) {
     const primes = getPrimesUpTo(maxPrime);
+    console.log("Primes", primes);
 
     // Zufällige Primfaktoren auswählen
-    const common = getRandomElements(primes, commonFactors);
-    const uniqueNum = getRandomElements(primes, numFactorsNum - commonFactors);
-    const uniqueDen = getRandomElements(primes, numFactorsDen - commonFactors);
+    const common = getRandomElementsWithDuplicates(primes, commonFactors);
+    const uniqueNum = getRandomElementsWithoutDuplicates(primes, numFactorsNum - commonFactors);
+    const uniqueDen = getRandomElementsWithoutDuplicates(primes, numFactorsDen - commonFactors);
+    console.log("common",common,"uniqueNum",uniqueNum, "uniqueDen",uniqueDen);
 
     // Zähler und Nenner zusammenstellen
     const numeratorFactors = shuffle([...common, ...uniqueNum]);
@@ -456,9 +471,15 @@ function getPrimesUpTo(max) {
 }
 
 // Hilfsfunktion: Wählt zufällig n Elemente aus einem Array aus
-function getRandomElements(arr, n) {
+function getRandomElementsWithoutDuplicates(arr, n) {
+    if (n>arr.length) return getRandomElementsWithDuplicates(arr, n);
     const shuffled = [...arr].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, n);
+}
+
+// Wählt zufällig n Elemente aus einem Array (mit Wiederholungen)
+function getRandomElementsWithDuplicates(arr, n) {
+    return Array.from({ length: n }, () => arr[Math.floor(Math.random() * arr.length)]);
 }
 
 // Hilfsfunktion: Mischt ein Array zufällig
@@ -535,6 +556,6 @@ canvas.addEventListener('touchstart', (e) => {
 window.addEventListener('resize', resizeCanvas);
 resizeCanvas(); // Initiale Anpassung
 
-document.getElementById('newTaskBtn').addEventListener('click', newTask);
+document.getElementById('newGameBtn').addEventListener('click', newGame);
 
-newTask();
+newGame();
