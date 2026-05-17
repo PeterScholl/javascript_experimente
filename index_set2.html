@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body,
+        button,
+        li,
+        input {
+            font-size: 1.3em;
+        }
+
+        /* Dropdown-Menü*/
+        .dropbtn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 16px;
+            font-size: 16px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .dropdown {
+            position: relative;
+            float: right;
+            top: 0px;
+            right: 0px;
+            z-index: 1;
+            display: block;
+        }
+
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            bottom: 50px;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+        }
+
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+
+        .dropdown:hover .dropbtn {
+            background-color: #3e8e41;
+        }
+
+        /* Kartendarstellung */
+        .row::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .row {
+            display: block;
+        }
+
+        .cell {
+            display: block;
+            float: left;
+            padding: 10px;
+            background-color: antiquewhite;
+            cursor: pointer;
+        }
+
+        .clicked {
+            background-color: darkgreen;
+        }
+
+        /* Text / Nummern in den Karten positionieren */
+        .container {
+            position: relative;
+        }
+
+        .topleft {
+            position: absolute;
+            top: 8px;
+            left: 14px;
+            font-size: 1.2em;
+            pointer-events: none;
+        }
+
+        /* Team modal Einstellungen */
+        button.teams {
+            margin-right: 15px;
+            margin-top: 10px;
+            padding: 15px;
+        }
+
+        #teamModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+        }
+
+        #modalContent {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: left;
+        }
+    </style>
+    <title>Das Spiel Set (SVG)</title>
+</head>
+
+<body onresize="s.resize()">
+
+    <!-- Team modal start-->
+    <div id="teamModal">
+        <div id="modalContent">
+            <h2>Team Management</h2>
+            <ul id="teamList"></ul>
+            <input type="text" id="teamNameInput" placeholder="Enter Team Name" onkeypress="handleKeyPress(event)">
+            <button onclick="addTeam()">Apply</button>
+            <button onclick="closeTeamModal()">Close</button>
+        </div>
+    </div>
+    <!-- Team modal end -->
+    <div>
+        <div class="field">
+
+        </div>
+    </div>
+    <div class="dropdown">
+        <button class="dropbtn">Menu</button>
+        <div class="dropdown-content">
+            <a href="#" onclick="s.reset()">Reset</a>
+            <a href="#" onclick="alert('Es gibt noch '+s.numberOfSets()+' Sets');">Sets</a>
+            <a href="#" onclick="s.changeZeilenOffset(-1);">Zeile -</a>
+            <a href="#" onclick="s.changeZeilenOffset(1);">Zeile +</a>
+            <a href="#" onclick="openTeamModal()">Teams</a>
+            <a href="#" onclick="s.neueKartenAusteilen(3);s.resize();">kein Set</a>
+        </div>
+    </div>
+    <div id="infos">
+
+    </div>
+    <div class="footer">
+        <hr>
+        <small>Stand 17.05.26 – SVG-Version – Quelltext auf <a
+                href="https://github.com/PeterScholl/javascript_experimente">GitHub</a></small>
+    </div>
+    <script src="./js/set2.js"></script>
+    <script>
+        const teamList = document.getElementById('teamList');
+        const teamNameInput = document.getElementById('teamNameInput');
+        const teamModal = document.getElementById('teamModal');
+        let editingIndex = -1;
+
+        function openTeamModal() {
+            updateTeamList();
+            teamModal.style.display = 'flex';
+        }
+
+        function closeTeamModal() {
+            teamModal.style.display = 'none';
+            Set.getInstance().teamWerteAnNamensListeAnpassen();
+        }
+
+        function updateTeamList() {
+            teamList.innerHTML = '';
+            const teams = getTeamsFromLocalStorage();
+            teams.forEach((team, index) => {
+                const listItem = document.createElement('li');
+                listItem.textContent = team + " ";
+
+                const deleteButton = document.createElement('button');
+                deleteButton.textContent = 'Delete';
+                deleteButton.onclick = () => deleteTeam(index);
+                listItem.appendChild(deleteButton);
+
+                const editButton = document.createElement('button');
+                editButton.style.marginLeft = "15px";
+                editButton.textContent = 'Edit';
+                editButton.onclick = () => editTeam(index);
+                listItem.appendChild(editButton);
+
+                teamList.appendChild(listItem);
+            });
+        }
+
+        function addTeam() {
+            const teamName = teamNameInput.value.trim();
+            if (teamName !== '') {
+                const teams = getTeamsFromLocalStorage();
+                if (editingIndex === -1) {
+                    teams.push(teamName);
+                } else {
+                    teams[editingIndex] = teamName;
+                    editingIndex = -1;
+                }
+                setTeamsToLocalStorage(teams);
+                teamNameInput.value = '';
+                updateTeamList();
+            }
+        }
+
+        function editTeam(index) {
+            const teams = getTeamsFromLocalStorage();
+            teamNameInput.value = teams[index];
+            editingIndex = index;
+        }
+
+        function deleteTeam(index) {
+            const teams = getTeamsFromLocalStorage();
+            teams.splice(index, 1);
+            setTeamsToLocalStorage(teams);
+            updateTeamList();
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                addTeam();
+            }
+        }
+
+        function getTeamsFromLocalStorage() {
+            return Set.getInstance().teamNames.slice(1);
+        }
+
+        function setTeamsToLocalStorage(teams) {
+            Set.getInstance().teamNames = ['Nicht zugeordnet', ...teams];
+            console.log("Neue Teamliste", Set.getInstance().teamNames);
+        }
+    </script>
+
+</body>
+
+</html>
