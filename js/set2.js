@@ -37,10 +37,12 @@ function cardToSVG(cardValue, width) {
         // S-förmige Kurve (obere Wölbung rechts, untere links)
         return [
             `M ${cx - 5},${cy - 42}`,
-            `C ${cx + 22},${cy - 42} ${cx + 22},${cy - 18} ${cx - 2},${cy - 8}`,
-            `C ${cx - 22},${cy + 2} ${cx - 22},${cy + 18} ${cx + 5},${cy + 42}`,
-            `C ${cx - 18},${cy + 42} ${cx - 18},${cy + 18} ${cx + 2},${cy + 8}`,
-            `C ${cx + 22},${cy - 2} ${cx + 22},${cy - 18} ${cx - 5},${cy - 42} Z`
+            `C ${cx + 40},${cy - 36} ${cx + 20},${cy - 15} ${cx + 5},${cy + 6}`,
+            `C ${cx + 0},${cy + 15} ${cx + 0},${cy + 15} ${cx + 5},${cy + 24}`,
+            `C ${cx + 10},${cy + 32} ${cx +10},${cy + 42} ${cx + 5},${cy + 42}`,
+            `C ${cx - 40},${cy + 36} ${cx - 20},${cy + 15} ${cx - 5},${cy - 6}`,
+            `C ${cx - 0},${cy - 15} ${cx - 0},${cy - 15} ${cx - 5},${cy - 24}`,
+            `C ${cx - 10},${cy - 32} ${cx - 10},${cy - 42} ${cx - 5},${cy - 42} Z`
         ].join(' ');
     }
 
@@ -54,7 +56,7 @@ function cardToSVG(cardValue, width) {
     if (shadingIdx === 1) {
         defsInner += `<pattern id="${uid}sp" patternUnits="userSpaceOnUse" width="7" height="7">
             <rect width="7" height="7" fill="white"/>
-            <line x1="3.5" y1="0" x2="3.5" y2="7" stroke="${color}" stroke-width="2.5"/>
+            <line x1="0" y1="3.5" x2="7" y2="3.5" stroke="${color}" stroke-width="2.5"/>
         </pattern>`;
 
         xList.forEach((cx, i) => {
