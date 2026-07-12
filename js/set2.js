@@ -18,13 +18,14 @@ const COLOR_SETS = {
     contrast: ['#cc2222', '#33113f', '#229933']
 };
 
-function cardToSVG(cardValue, width, colors = COLOR_SETS.normal) {
+function cardToSVG(cardValue, width, colors = COLOR_SETS.normal, strokeScale = 1) {
     const count     = (cardValue % 3) + 1;
     const colorIdx  = Math.floor(cardValue / 3)  % 3;
     const shapeIdx  = Math.floor(cardValue / 9)  % 3;
     const shadingIdx= Math.floor(cardValue / 27) % 3;
 
     const color  = colors[colorIdx];
+    const strokeWidth = 2.5 * strokeScale;
 
     const W = 200, H = 130;
     const h = Math.round(width * H / W);
@@ -60,7 +61,7 @@ function cardToSVG(cardValue, width, colors = COLOR_SETS.normal) {
     if (shadingIdx === 1) {
         defsInner += `<pattern id="${uid}sp" patternUnits="userSpaceOnUse" width="7" height="7">
             <rect width="7" height="7" fill="white"/>
-            <line x1="0" y1="3.5" x2="7" y2="3.5" stroke="${color}" stroke-width="2.5"/>
+            <line x1="0" y1="3.5" x2="7" y2="3.5" stroke="${color}" stroke-width="i${strokeWidth}"/>
         </pattern>`;
 
         xList.forEach((cx, i) => {
@@ -84,14 +85,14 @@ function cardToSVG(cardValue, width, colors = COLOR_SETS.normal) {
         if (shapeIdx === 0) {
             const d = squigglePath(cx);
             if (shadingIdx === 1) shapes += stripeRect;
-            shapes += `<path d="${d}" fill="${solidFill}" stroke="${color}" stroke-width="2.5"/>`;
+            shapes += `<path d="${d}" fill="${solidFill}" stroke="${color}" stroke-width="${strokeWidth}"/>`;
         } else if (shapeIdx === 1) {
             const d = diamondPath(cx);
             if (shadingIdx === 1) shapes += stripeRect;
-            shapes += `<path d="${d}" fill="${solidFill}" stroke="${color}" stroke-width="2.5"/>`;
+            shapes += `<path d="${d}" fill="${solidFill}" stroke="${color}" stroke-width="${strokeWidth}"/>`;
         } else {
             if (shadingIdx === 1) shapes += stripeRect;
-            shapes += `<ellipse cx="${cx}" cy="${cy}" rx="17" ry="42" fill="${solidFill}" stroke="${color}" stroke-width="2.5"/>`;
+            shapes += `<ellipse cx="${cx}" cy="${cy}" rx="17" ry="42" fill="${solidFill}" stroke="${color}" stroke-width="${strokeWidth}"/>`;
         }
     });
 
@@ -190,7 +191,8 @@ class Set {
             td.innerHTML = cardToSVG(
                 this.spielfeld[i], 
                 this.kartenBildWidth,
-                this.highContrast ? COLOR_SETS.contrast : COLOR_SETS.normal
+                this.highContrast ? COLOR_SETS.contrast : COLOR_SETS.normal,
+                this.highContrast ? 1.5 : 1     //strokeScaleFaktor
             ) + "<div class='topleft'>" + (i + 1) + "</div>";
             td.addEventListener("click", (e) => { this.karteGeklickt(e.target); });
             row[currow++].appendChild(td);
