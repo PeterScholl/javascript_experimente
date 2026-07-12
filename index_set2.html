@@ -151,6 +151,10 @@
         <div class="dropdown-content">
             <a href="#" onclick="s.reset()">Reset</a>
             <a href="#" onclick="alert('Es gibt noch '+s.numberOfSets()+' Sets');">Sets</a>
+            <label style="display:block;padding:12px 16px;cursor:pointer;">
+              <input type="checkbox" id="contrastToggle" onchange="s.toggleContrast(this.checked)">
+              Kontrast+
+            </label>
             <a href="#" onclick="s.changeZeilenOffset(-1);">Zeile -</a>
             <a href="#" onclick="s.changeZeilenOffset(1);">Zeile +</a>
             <a href="#" onclick="openTeamModal()">Teams</a>
@@ -162,7 +166,7 @@
     </div>
     <div class="footer">
         <hr>
-        <small>Stand 17.05.26 – SVG-Version – Quelltext auf <a
+        <small>Stand 12.07.26 – SVG-Version – Quelltext auf <a
                 href="https://github.com/PeterScholl/javascript_experimente">GitHub</a></small>
     </div>
     <script src="./js/set2.js"></script>

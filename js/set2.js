@@ -1,5 +1,5 @@
 /*
- * Version 0.05 Peter Scholl - SVG-Version
+ * Version 0.06 Peter Scholl - SVG-Version
  */
 
 /**
@@ -13,14 +13,18 @@
  *   (n/9)  % 3   → Form          (0→Squiggle, 1→Raute, 2→Oval)
  *   (n/27) % 3   → Füllung       (0→voll, 1→gestreift, 2→offen)
  */
-function cardToSVG(cardValue, width) {
+const COLOR_SETS = {
+    normal:   ['#cc2222', '#882299', '#229933'],
+    contrast: ['#cc2222', '#33113f', '#229933']
+};
+
+function cardToSVG(cardValue, width, colors = COLOR_SETS.normal) {
     const count     = (cardValue % 3) + 1;
     const colorIdx  = Math.floor(cardValue / 3)  % 3;
     const shapeIdx  = Math.floor(cardValue / 9)  % 3;
     const shadingIdx= Math.floor(cardValue / 27) % 3;
 
-    const COLORS = ['#cc2222', '#882299', '#229933'];
-    const color  = COLORS[colorIdx];
+    const color  = colors[colorIdx];
 
     const W = 200, H = 130;
     const h = Math.round(width * H / W);
@@ -121,6 +125,7 @@ class Set {
             this.tableRows = 3;
             this.kartenBildWidth = 200;
             this.zeilenOffset = 0;
+            this.highContrast = localStorage.getItem('highContrast') === 'true'; 
             this.resize();
         }
     }
@@ -182,8 +187,11 @@ class Set {
             td.setAttribute('id', i);
             td.classList.add('cell', 'container');
             // SVG statt img
-            td.innerHTML = cardToSVG(this.spielfeld[i], this.kartenBildWidth) +
-                "<div class='topleft'>" + (i + 1) + "</div>";
+            td.innerHTML = cardToSVG(
+                this.spielfeld[i], 
+                this.kartenBildWidth,
+                this.highContrast ? COLOR_SETS.contrast : COLOR_SETS.normal
+            ) + "<div class='topleft'>" + (i + 1) + "</div>";
             td.addEventListener("click", (e) => { this.karteGeklickt(e.target); });
             row[currow++].appendChild(td);
             currow %= this.tableRows;
@@ -334,6 +342,12 @@ class Set {
         this.resize();
     }
 
+    toggleContrast(checked) {
+        this.highContrast = checked;
+        localStorage.setItem('highContrast', checked);
+        this.draw();
+    }
+
     test() {
         let text = "Window inner Height: " + window.innerHeight + "\n";
         text += "Screen available Height: " + screen.availHeight + "\n";
@@ -349,3 +363,4 @@ class Set {
 console.log("Avail-height:", screen.availHeight, "Avail-width", screen.availWidth);
 let s = Set.getInstance();
 s.reset();
+document.getElementById('contrastToggle').checked = s.highContrast;
